@@ -1,2 +1,2 @@
 # amble-server
-Server for Amble iOS app.
+API for Amble iOS app.
