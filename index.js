@@ -7,4 +7,7 @@ app.get('/', function (req, res) {
   res.send('<html><body><h1>Hello World</h1></body></html>');
 });
 
-app.listen(3000);
+app.listen(app.get('port'), function() {
+  console.log('Node app is running on port', app.get('port'));
+});
+
