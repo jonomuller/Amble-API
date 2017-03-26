@@ -1,8 +1,9 @@
 const mongoose = require('mongoose'),
       bcrypt = require('bcrypt'),
-      Schema = mongoose.Schema();
+      Schema = mongoose.Schema(),
+      SALT_ROUNDS = 12;
 
-const User = new Schema({
+const UserSchema = new Schema({
   name: {
     firstName: {
       type: String,
@@ -16,14 +17,12 @@ const User = new Schema({
 
   username: {
     type: String,
-    lowercase: true,
     unique: true,
     required: true
   },
 
   email: {
     type: String,
-    lowercase: true,
     unique: true,
     required: true
   },
@@ -34,5 +33,16 @@ const User = new Schema({
   }
 });
 
+// Encrypt password when created or modified
+UserSchema.pre('save', function(next) {
+  if (this.isModified('password')) {
+    bcrypt.hash(this.password, SALT_ROUNDS, function(error, hash) {
+      if (error) return next(error);
+      this.password = hash;
+      next();
+    });
+  }
+});
 
-module.exports = mongoose.model('User', User);
+
+module.exports = mongoose.model('User', UserSchema);
