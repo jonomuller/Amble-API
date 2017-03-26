@@ -1,7 +1,16 @@
-var express = require('express');
-var app = express();
+const config = require('./config/main'),
+      express = require('express'),
+      app = express(),
+      logger = require('morgan'),
+      bodyParser = require('body-parser'),
+      mongoose = require('mongoose'),
+      server = app.listen(config.port);
 
-app.set('port', process.env.PORT || 3000); 
+mongoose.connect(config.database);
+
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
+app.set('port', process.env.PORT || 3000);
  
 app.get('/', function (req, res) {
   res.send('<html><body><h1>Hello World</h1></body></html>');
