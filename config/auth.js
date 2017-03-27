@@ -3,7 +3,7 @@ const passport = require('passport'),
       LocalStrategy = require('passport-local').Strategy,
       JwtStrategy = passportJWT.Strategy,
       ExtractJWT = passportJWT.ExtractJwt,
-      config = require('./main'),
+      config = require('./config'),
       User = require('../models/user');
 
 const options = {

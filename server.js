@@ -1,4 +1,4 @@
-const config = require('./config/main'),
+const config = require('./config/config'),
       express = require('express'),
       app = express(),
       logger = require('morgan'),
