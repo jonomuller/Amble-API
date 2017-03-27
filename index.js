@@ -9,7 +9,8 @@ const config = require('./config/main'),
 
 mongoose.connect(config.database, function(error) {
   if (error) throw error;
-  console.log('Node app is running on port', config.port);
+  console.log('Database connected to', config.database);
+  console.log('App is running on port', config.port);
 });
 
 app.use(bodyParser.urlencoded({extended: false}));
