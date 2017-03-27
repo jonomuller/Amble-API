@@ -1,13 +1,20 @@
-var express = require('express');
-var app = express();
+const config = require('./config/main'),
+      express = require('express'),
+      app = express(),
+      logger = require('morgan'),
+      bodyParser = require('body-parser'),
+      mongoose = require('mongoose'),
+      User = require('./models/user'),
+      server = app.listen(config.port);
 
-app.set('port', process.env.PORT || 3000); 
+mongoose.connect(config.database, function(error) {
+  if (error) throw error;
+  console.log('Node app is running on port', config.port);
+});
+
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
  
 app.get('/', function (req, res) {
   res.send('<html><body><h1>Hello World</h1></body></html>');
 });
-
-app.listen(app.get('port'), function() {
-  console.log('Node app is running on port', app.get('port'));
-});
-
