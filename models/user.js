@@ -49,9 +49,9 @@ UserSchema.pre('save', function(next) {
 
 // Compare passwords when user logs in
 UserSchema.methods.comparePassword = function(newPassword, callback) {
-  bcrypt.compare(newPassword, this.password, function(error, result) {
+  bcrypt.compare(newPassword, this.password, function(error, success) {
     if (error) return callback(error);
-    callback(null, result);
+    callback(null, success);
   });
 };
 
