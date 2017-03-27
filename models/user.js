@@ -27,6 +27,12 @@ const UserSchema = new Schema({
   password: {
     type: String,
     required: true
+  },
+  score: {
+    type: Number
+  },
+  distance: {
+    type: Number
   }
 });
 
