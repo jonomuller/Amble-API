@@ -14,7 +14,7 @@ const options = {
 // Used to log user in via username and password
 passport.use(new LocalStrategy(function (username, password, done) {
   User.findOne({username: username}, function(error, user) {
-    var message = {message: 'Invalid username or password'};
+    var message = {message: 'Invalid username or password.'};
 
     if (error) return done(error);
     if (!user) return done(null, false, message);
