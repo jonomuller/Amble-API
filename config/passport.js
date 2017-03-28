@@ -2,7 +2,7 @@ const passport = require('passport'),
       passportJWT = require('passport-jwt'),
       LocalStrategy = require('passport-local').Strategy,
       JwtStrategy = passportJWT.Strategy,
-      ExtractJWT = passportJWT.ExtractJwt,
+      ExtractJwt = passportJWT.ExtractJwt,
       config = require('./config'),
       User = require('../models/user');
 
@@ -16,11 +16,15 @@ passport.use(new LocalStrategy(function (username, password, done) {
   User.findOne({username: username}, function(error, user) {
     if (error) return done(error);
     if (!user) return done(null, false);
+    console.log('found username');
 
     user.comparePassword(password, function(error, success) {
       if (error) return done(error);
-      if (!success) return done(null, false);
-
+      if (!success) {
+        console.log('passwords don\'t match');
+        return done(null, false);
+      }
+      console.log('passwords match');
       done(null, user);
     });
   });

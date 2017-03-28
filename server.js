@@ -5,7 +5,8 @@ const config = require('./config/config'),
       bodyParser = require('body-parser'),
       mongoose = require('mongoose'),
       User = require('./models/user'),
-      server = app.listen(config.port);
+      server = app.listen(config.port),
+      router = require('./router');
 
 mongoose.connect(config.database, function(error) {
   if (error) throw error;
@@ -15,7 +16,6 @@ mongoose.connect(config.database, function(error) {
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
- 
-app.get('/', function (req, res) {
-  res.send('<html><body><h1>Hello World</h1></body></html>');
-});
+
+// Route all API calls through /api
+app.use('/api', router);
