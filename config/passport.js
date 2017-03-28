@@ -14,17 +14,16 @@ const options = {
 // Used to log user in via username and password
 passport.use(new LocalStrategy(function (username, password, done) {
   User.findOne({username: username}, function(error, user) {
+    var message = {message: 'Invalid username or password'};
+
     if (error) return done(error);
-    if (!user) return done(null, false);
-    console.log('found username');
+    if (!user) return done(null, false, message);
 
     user.comparePassword(password, function(error, success) {
       if (error) return done(error);
       if (!success) {
-        console.log('passwords don\'t match');
-        return done(null, false);
+        return done(null, false, message);
       }
-      console.log('passwords match');
       done(null, user);
     });
   });
