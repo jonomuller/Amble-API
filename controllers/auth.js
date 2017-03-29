@@ -6,9 +6,15 @@ const jwt = require('jsonwebtoken'),
 function returnWithJWT(user, status, res) {
   token = jwt.sign(user, config.jwtSecret);
   res.status(status).json({
-  user: user.username,
-  jwt: token
+    user: user.username,
+    jwt: token
   });
+}
+
+function registerError(field, res) {
+  return res.status(400).json({
+      error: `A user with that ${field} already exists.`
+    });
 }
 
 module.exports.login = function(req, res, next) {
@@ -46,15 +52,11 @@ module.exports.register = function(req, res, next) {
 
   User.findOne({username: username}, function(error, foundUsername) {
     if (error) return next(error);
-    if (foundUsername) return res.status(400).json({
-                                error: 'A user with that username already exists.'
-                              })
+    if (foundUsername) return registerError('username', res);
 
     User.findOne({email: email}, function(error, foundEmail) {
       if (error) return next(error);
-      if (foundEmail) return res.status(400).json({
-                               error: 'A user with that email already exists.'
-                             })
+      if (foundEmail) return registerError('email address', res);
 
       var user = User({
         name: {
