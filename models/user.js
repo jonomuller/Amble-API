@@ -1,7 +1,7 @@
 const mongoose = require('mongoose'),
       bcrypt = require('bcrypt'),
       Schema = mongoose.Schema,
-      SALT_ROUNDS = 12;
+      SALT_ROUNDS = 10;
 
 const UserSchema = new Schema({
   name: {
@@ -38,11 +38,12 @@ const UserSchema = new Schema({
 
 // Encrypt password when created or modified
 UserSchema.pre('save', function(next) {
-  if (!this.isModified('password')) return next();
+  var user = this;
+  if (!user.isModified('password')) return next();
 
-  bcrypt.hash(this.password, SALT_ROUNDS, function(error, hash) {
+  bcrypt.hash(user.password, SALT_ROUNDS, function(error, hash) {
     if (error) return next(error);
-    this.password = hash;
+    user.password = hash;
     next();
   });
 });

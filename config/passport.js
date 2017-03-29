@@ -2,7 +2,7 @@ const passport = require('passport'),
       passportJWT = require('passport-jwt'),
       LocalStrategy = require('passport-local').Strategy,
       JwtStrategy = passportJWT.Strategy,
-      ExtractJWT = passportJWT.ExtractJwt,
+      ExtractJwt = passportJWT.ExtractJwt,
       config = require('./config'),
       User = require('../models/user');
 
@@ -14,13 +14,16 @@ const options = {
 // Used to log user in via username and password
 passport.use(new LocalStrategy(function (username, password, done) {
   User.findOne({username: username}, function(error, user) {
+    var message = {message: 'Invalid username or password.'};
+
     if (error) return done(error);
-    if (!user) return done(null, false);
+    if (!user) return done(null, false, message);
 
     user.comparePassword(password, function(error, success) {
       if (error) return done(error);
-      if (!success) return done(null, false);
-
+      if (!success) {
+        return done(null, false, message);
+      }
       done(null, user);
     });
   });
