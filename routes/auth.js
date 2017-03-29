@@ -5,5 +5,6 @@ const express = require('express'),
       config = require('../config/config');
 
 authRouter.post('/login', auth.login);
+authRouter.post('/register', auth.register);
 
 module.exports = authRouter;
