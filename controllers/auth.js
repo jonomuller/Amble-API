@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken'),
 function returnWithJWT(user, status, res) {
   token = jwt.sign(user, config.jwtSecret);
   res.status(status).json({
+    success: true,
     user: user.username,
     jwt: token
   });
@@ -13,6 +14,7 @@ function returnWithJWT(user, status, res) {
 
 function registerError(field, res) {
   return res.status(400).json({
+      success: false,
       error: `A user with that ${field} already exists.`
     });
 }
@@ -21,6 +23,7 @@ module.exports.login = function(req, res, next) {
   passport.authenticate('local', config.jwtSession, function(error, user, info) {
     if (error) return next(error);
     if (!user) return res.status(401).json({
+                        success: false,
                         error: info.message
                       })
 
@@ -46,6 +49,7 @@ module.exports.register = function(req, res, next) {
   for (let key in required) {
     var value = required[key];
     if (!value) return res.status(400).json({
+                         success: false,
                          error: `Please enter your ${key}.`
                        })
   }
