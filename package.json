@@ -12,5 +12,24 @@
     "passport": "^0.3.2",
     "passport-jwt": "^2.2.1",
     "passport-local": "^1.0.0"
-  }
+  },
+  "description": "API for Amble iOS app.",
+  "main": "app.js",
+  "devDependencies": {
+    "mocha": "^3.2.0"
+  },
+  "scripts": {
+    "test": "mocha",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jonomuller/amble-api.git"
+  },
+  "author": "Jonathan Muller",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jonomuller/amble-api/issues"
+  },
+  "homepage": "https://github.com/jonomuller/amble-api#readme"
 }
