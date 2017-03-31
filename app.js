@@ -19,3 +19,5 @@ app.use(bodyParser.json());
 
 // Route all API calls through /api
 app.use('/api', router);
+
+module.exports = app;
