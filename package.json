@@ -1,0 +1,39 @@
+{
+  "name": "amble-api",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.17.1",
+    "express": "^4.14.1",
+    "jsonwebtoken": "^7.3.0",
+    "mongoose": "^4.8.5",
+    "morgan": "^1.8.1",
+    "passport": "^0.3.2",
+    "passport-jwt": "^2.2.1",
+    "passport-local": "^1.0.0"
+  },
+  "description": "API for Amble iOS app.",
+  "main": "app.js",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.2.0",
+    "should": "^11.2.1",
+    "supertest": "^3.0.0"
+  },
+  "scripts": {
+    "test": "istanbul cover _mocha test/main_test.js",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jonomuller/amble-api.git"
+  },
+  "author": "Jonathan Muller",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jonomuller/amble-api/issues"
+  },
+  "homepage": "https://github.com/jonomuller/amble-api#readme"
+}
