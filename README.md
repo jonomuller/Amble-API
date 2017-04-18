@@ -28,11 +28,11 @@ Logs the user in if their credentials are valid, returning a [JSON Web Token](ht
   - **password** _(required)_
   
 - Success response:
-  - Code: 200
+  - Code: 200 OK
   - Content: a User object and a JWT.
   
 - Errors:
-  - 401 Unauthorized -- invalid username or password
+  - **401 Unauthorized** – invalid username or password
   
 ---
 
@@ -52,9 +52,9 @@ Registers a new user, returning a JWT.
   - **lastName** _(required)_
   
 - Success response:
-  - Code: 201
+  - Code: 201 Created
   - Content: a User object and a JWT.
   
 - Errors:
-  - **400 Bad Request** -- a user with that username already exists
-  - **400 Bad Request** -- a user with that email address aleady exists
+  - **400 Bad Request** – a user with that username already exists
+  - **400 Bad Request** – a user with that email address aleady exists
