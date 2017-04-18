@@ -1,5 +1,5 @@
 {
-  "name": "amble-api",
+  "name": "Amble-API",
   "version": "0.0.1",
   "private": true,
   "dependencies": {
@@ -28,12 +28,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jonomuller/amble-api.git"
+    "url": "git+https://github.com/jonomuller/Amble-API.git"
   },
   "author": "Jonathan Muller",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/jonomuller/amble-api/issues"
+    "url": "https://github.com/jonomuller/Amble-API/issues"
   },
-  "homepage": "https://github.com/jonomuller/amble-api#readme"
+  "homepage": "https://github.com/jonomuller/Amble-API#readme"
 }
