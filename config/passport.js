@@ -31,8 +31,8 @@ passport.use(new LocalStrategy(function(username, password, done) {
 
 // Used to verify if user is authenticated without them having to log in again
 // with username and password
-passport.use(new JwtStrategy(options, function(jwt_payload, done) {
-  User.findById(jwt_payload._id, function(error, user) {
+passport.use(new JwtStrategy(options, function(jwt, done) {
+  User.findById(jwt._doc._id, function(error, user) {
     if (error) return done(error, false);
 
     if (user) {
