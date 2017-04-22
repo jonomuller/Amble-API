@@ -38,3 +38,27 @@ module.exports.create = function(req, res, next) {
     });
   });
 };
+
+module.exports.getWalk = function(req, res, next) {
+  var id = req.params.walkID
+
+  Walk.findById(id, function(error, walk) {
+    if (error) {
+      if (error.name == "CastError") return res.status(400).json({
+                                              success: false,
+                                              error: 'Please enter a valid ID.'
+                                            });
+      return next(error);
+    }
+
+    if (!walk) return res.status(404).json({
+                        success: false,
+                        error: 'No walk with that ID can be found.'
+                      })
+
+    return res.status(200).json({
+             success: true,
+             walk: walk
+           });
+  });
+};
