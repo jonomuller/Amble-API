@@ -71,7 +71,7 @@ Stores a given list of coordinates in the database, with a reference to the user
 
 - Authorization:
   - A JWT for a registered user must be supplied in the _Authorization_ field of the request header.
-  - The token must be supplied in the format `JWT **token**`
+  - The token must be supplied in the format `JWT 'token'`
 
 - Parameters:
   - **name** _(required)_
