@@ -3,7 +3,7 @@ const Walk = require('../models/walk');
 module.exports.create = function(req, res, next) {
   var name = req.body.name;
   var owner = req.body.owner;
-  var coordinates = JSON.parse(req.body.coordinates)
+  var coordinates = req.body.coordinates;
 
   var required = {
     "name": name,
@@ -18,6 +18,8 @@ module.exports.create = function(req, res, next) {
                          error: `Please enter the ${key}.`
                        })
   }
+
+  coordinates = JSON.parse(coordinates);
 
   var walk = new Walk({
     name,

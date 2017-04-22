@@ -40,6 +40,43 @@ describe('POST /create', function() {
     });
   });
 
+  describe('Invalid walk creation', function() {
+    it('should fail with missing details', function(done) {
+      request(app)
+        .post(uriPrefix + '/create')
+        .set('Authorization', 'JWT ' + jwt)
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(false);
+          res.body.error.should.be.equal('Please enter the name.')
+        })
+        .expect(400, done);
+    });
+
+    it('should fail with no JWT authorization', function(done) {
+      request(app)
+        .post(uriPrefix + '/create')
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(false);
+          res.body.error.should.be.equal("No auth token");
+        })
+        .expect(401, done);
+    });
+
+    it('should fail with invalid JWT', function(done) {
+      request(app)
+        .post(uriPrefix + '/create')
+        .set('Authorization', 'JWT invalid_jwt')
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(false);
+          res.body.error.should.be.equal("jwt malformed")
+        })
+        .expect(401, done);
+    })
+  });
+
   // Clear database
   after(function(done) {
     helper.clearDB('users', done);
