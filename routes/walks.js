@@ -7,9 +7,10 @@ const express = require('express'),
 var jwtAuth = function(req, res, next) {
   passport.authenticate('jwt', config.jwtSession, function(error, user, info) {
     if (error) return next(error);
+    var message = info ? info.message : "Invalid token";
     if (!user) return res.status(401).json({
                     success: false,
-                    error: info.message
+                    error: message
                   })
     next();
   })(req, res, next);
