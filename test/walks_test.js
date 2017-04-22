@@ -36,7 +36,7 @@ describe('POST /create', function() {
         .expect(function(res) {
           res.body.success.should.be.equal(true);
         })
-        .expect(200, done);
+        .expect(201, done);
     });
   });
 

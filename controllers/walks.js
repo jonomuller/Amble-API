@@ -32,7 +32,7 @@ module.exports.create = function(req, res, next) {
 
   walk.save(function(error) {
     if (error) return next(error);
-    res.status(200).json({
+    res.status(201).json({
       success: true,
       walk: walk
     });

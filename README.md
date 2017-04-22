@@ -1,6 +1,6 @@
 # Amble API
 
-[![Build Status](https://travis-ci.com/jonomuller/Amble-API.svg?token=77dffccSF6M8atNRQtfP&branch=master)](https://travis-ci.com/jonomuller/Amble-API)
+[![Build Status](https://travis-ci.org/jonomuller/Amble-API.svg?branch=master)](https://travis-ci.org/jonomuller/Amble-API)
 [![dependencies Status](https://david-dm.org/jonomuller/Amble-API/status.svg)](https://david-dm.org/jonomuller/Amble-API)
 
 A [REST API](https://en.wikipedia.org/wiki/Representational_state_transfer) used to store and retrieve data from the Amble iOS app, hosted on [Heroku](https://www.heroku.com). All responses are returned in [JSON](http://www.json.org).
@@ -29,7 +29,7 @@ Logs the user in if their credentials are valid, returning a [JSON Web Token](ht
   
 - Success response:
   - Code: 200 OK
-  - Content: a User object and a JWT.
+  - Content: a User object and a JWT
   
 - Errors:
   - **401 Unauthorized** – invalid username or password
@@ -53,8 +53,35 @@ Registers a new user, returning a JWT.
   
 - Success response:
   - Code: 201 Created
-  - Content: a User object and a JWT.
+  - Content: a User object and a JWT
   
 - Errors:
   - **400 Bad Request** – a user with that username already exists
   - **400 Bad Request** – a user with that email address aleady exists
+
+### Walks
+
+#### Create a walk
+
+```
+POST /walks/create
+```
+
+Stores a given list of coordinates in the database, with a reference to the user that the walk belongs to.
+
+- Authorization:
+  - A JWT for a registered user must be supplied in the _Authorization_ field of the request header.
+  - The token must be supplied in the format `JWT **token**`
+
+- Parameters:
+  - **name** _(required)_
+  - **owner** _(required)_
+  - **coordinates** _(required)_
+
+- Success response:
+  - Code: 201 Created
+  - Content: A success flag and the walk saved in JSON
+
+- Errors:
+  - **401 Unauthorized** – no/invalid JWT provided
+  - **400 Bad Request** – one or more parameters missing
