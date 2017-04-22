@@ -8,7 +8,7 @@ var testWalk = {
   owner: '0001',
   coordinates: '[[1.02, 3.204], [34543.234, 3432], [43.4, 76]]'
 };
-var jwt; 
+var jwt;
 
 describe('POST /create', function() {
 
