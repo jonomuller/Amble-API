@@ -1,14 +1,15 @@
 const request = require('supertest'),
       app = require('../app'),
       uriPrefix = '/api/walks'
-      mongoose = require('mongoose');
+      mongoose = require('mongoose'),
+      helper = require('./helper');
 
-var testWalk = { 
-  name: 'Test Walk',
-  owner: '0001',
-  coordinates: '[[1.02, 3.204], [34543.234, 3432], [43.4, 76]]'
-};
-var jwt;
+var jwt,
+    testWalk = { 
+      name: 'Test Walk',
+      owner: '0001',
+      coordinates: '[[1.02, 3.204], [34543.234, 3432], [43.4, 76]]'
+    };
 
 describe('POST /create', function() {
 
@@ -41,13 +42,7 @@ describe('POST /create', function() {
 
   // Clear database
   after(function(done) {
-    mongoose.connection.db.dropCollection('users', function(error, result) {
-      if (error) throw error;
-      done();
-    });
-    mongoose.connection.db.dropCollection('walks', function(error, result) {
-      if (error) throw error;
-      done();
-    });
+    helper.clearDB('users', done);
+    helper.clearDB('walks', done);
   });
 });
