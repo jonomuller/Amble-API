@@ -1,4 +1,5 @@
 const mongoose = require('mongoose'),
+      geoJSON = require('mongoose-geojson-schema'),
       Schema = mongoose.Schema;
 
 const WalkSchema = new Schema({
@@ -8,13 +9,10 @@ const WalkSchema = new Schema({
   },
   owner: {
     type: Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
+    required: true
   },
-  // unsure if this is correct way of storing a walk
-  waypoints: [{
-    type: [Number],
-    index: '2d'
-  }]
+  geometry: Schema.Types.MultiPoint
 });
 
 module.exports = mongoose.model('Walk', WalkSchema);

@@ -7,7 +7,7 @@ function returnWithJWT(user, status, res) {
   token = jwt.sign(user, config.jwtSecret);
   res.status(status).json({
     success: true,
-    user: user.username,
+    user: user,
     jwt: token
   });
 }
