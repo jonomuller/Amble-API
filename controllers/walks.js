@@ -40,7 +40,7 @@ module.exports.create = function(req, res, next) {
 };
 
 module.exports.getWalk = function(req, res, next) {
-  var id = req.params.walkID
+  var id = req.params.walkID;
 
   Walk.findById(id, function(error, walk) {
     if (error) {
