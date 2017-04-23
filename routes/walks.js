@@ -17,5 +17,6 @@ var jwtAuth = function(req, res, next) {
 };
 
 walksRouter.post('/create', jwtAuth, walks.create);
+walksRouter.get('/:walkID', jwtAuth, walks.getWalk);
 
 module.exports = walksRouter;

@@ -5,7 +5,8 @@ const request = require('supertest'),
       helper = require('./helper');
 
 var jwt,
-    testWalk = { 
+    testWalk = {
+      id: '0001',
       name: 'Test Walk',
       owner: '0001',
       coordinates: '[[1.02, 3.204], [34543.234, 3432], [43.4, 76]]'
@@ -34,6 +35,7 @@ describe('POST /create', function() {
         .send(testWalk)
         .expect('Content-Type', /json/)
         .expect(function(res) {
+          testWalk.id = res.body.walk._id
           res.body.success.should.be.equal(true);
         })
         .expect(201, done);
@@ -76,8 +78,50 @@ describe('POST /create', function() {
         .expect(401, done);
     })
   });
+});
 
-  // Clear database
+describe('GET /:walkID', function() {
+  describe('Valid walk retrieval', function() {
+    it('should return walk with valid ID', function(done) {
+      request(app)
+        .get(uriPrefix + '/' + testWalk.id)
+        .set('Authorization', 'JWT ' + jwt)
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(true);
+        })
+        .expect(200, done);
+    });
+  });
+
+  describe('Invalid walk retrieval', function() {
+    it('should fail with invalid ID', function(done) {
+      request(app)
+        .get(uriPrefix + '/invalid_id')
+        .set('Authorization', 'JWT ' + jwt)
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(false);
+          res.body.error.should.be.equal('Please enter a valid ID.')
+        })
+        .expect(400, done);
+    });
+
+    it('should fail with ID not found', function(done) {
+      var notFoundID = '000000000000'
+      request(app)
+        .get(uriPrefix + '/' + notFoundID)
+        .set('Authorization', 'JWT ' + jwt)
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(false);
+          res.body.error.should.be.equal('No walk with that ID can be found.')
+        })
+        .expect(404, done);
+    });
+  });
+
+    // Clear database
   after(function(done) {
     helper.clearDB('users', done);
     helper.clearDB('walks', done);
