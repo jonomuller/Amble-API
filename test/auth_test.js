@@ -5,6 +5,7 @@ const expect = require('chai').expect,
       User = require('../models/user'),
       app = require('../app'),
       uriPrefix = '/api/auth',
+      helper = require('./helper'),
       testUser = {
         username: 'bob123',
         email: 'bob@bobson.com',
@@ -153,8 +154,5 @@ describe('POST /register', function() {
 });
 
 function clearDB(done) {
-  mongoose.connection.db.dropCollection('users', function(error, result) {
-    if (error) throw error;
-    done();
-  });
+  helper.clearDB('users', done);
 }
