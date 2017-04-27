@@ -12,7 +12,22 @@ const WalkSchema = new Schema({
     ref: 'User',
     required: true
   },
-  geometry: Schema.Types.MultiPoint
+  geometry: {
+    type: Schema.Types.MultiPoint,
+    required: true
+  },
+  time: {
+    type: Number,
+    required: true
+  },
+  distance: {
+    type: Number,
+    required: true
+  },
+  steps: {
+    type: Number,
+    required: true
+  }
 });
 
 module.exports = mongoose.model('Walk', WalkSchema);

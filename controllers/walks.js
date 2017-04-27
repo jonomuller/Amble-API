@@ -4,18 +4,24 @@ module.exports.create = function(req, res, next) {
   var name = req.body.name;
   var owner = req.body.owner;
   var coordinates = req.body.coordinates;
+  var time = req.body.time;
+  var distance = req.body.distance;
+  var steps = req.body.steps;
 
   var required = {
     "name": name,
     "owner": owner,
-    "coordinates": coordinates
+    "coordinates": coordinates,
+    "time": time,
+    "distance": distance,
+    "steps": steps
   };
 
   for (let key in required) {
     var value = required[key];
     if (!value) return res.status(400).json({
                          success: false,
-                         error: `Please enter the ${key}.`
+                         error: `Please enter the walk ${key}.`
                        })
   }
 
@@ -27,7 +33,10 @@ module.exports.create = function(req, res, next) {
     geometry: {
       type: 'MultiPoint',
       coordinates: coordinates
-    }
+    },
+    time: time,
+    distance: distance,
+    steps: steps
   });
 
   walk.save(function(error) {
