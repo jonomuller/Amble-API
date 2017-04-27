@@ -53,7 +53,7 @@ describe('POST /create', function() {
         .expect('Content-Type', /json/)
         .expect(function(res) {
           res.body.success.should.be.equal(false);
-          res.body.error.should.be.equal('Please enter the walk name.')
+          res.body.error.should.be.equal('Path `name` is required.')
         })
         .expect(400, done);
     });
@@ -99,13 +99,15 @@ describe('GET /:walkID', function() {
 
   describe('Invalid walk retrieval', function() {
     it('should fail with invalid ID', function(done) {
+      let invalid_id = "invalid_id"
       request(app)
-        .get(uriPrefix + '/invalid_id')
+        .get(uriPrefix + '/' + invalid_id)
         .set('Authorization', 'JWT ' + jwt)
         .expect('Content-Type', /json/)
         .expect(function(res) {
           res.body.success.should.be.equal(false);
-          res.body.error.should.be.equal('Please enter a valid ID.')
+          res.body.error.should.be.equal('Cast to ObjectId failed for value "' 
+            + invalid_id + '" at path "_id" for model "Walk"')
         })
         .expect(400, done);
     });

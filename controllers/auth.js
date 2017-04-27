@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken'),
       config = require('../config/config'),
       passport = require('passport'),
-      User = require('../models/user');
+      User = require('../models/user'),
+      helper = require('./helper');
 
 function returnWithJWT(user, status, res) {
   token = jwt.sign(user, config.jwtSecret);
@@ -38,42 +39,26 @@ module.exports.register = function(req, res, next) {
       firstName = req.body.firstName,
       lastName = req.body.lastName;
 
-  var required = {
-    "username": username,
-    "email address": email,
-    "password": password,
-    "first name": firstName,
-    "last name": lastName
-  };
-
-  for (let key in required) {
-    var value = required[key];
-    if (!value) return res.status(400).json({
-                         success: false,
-                         error: `Please enter your ${key}.`
-                       })
-  }
-
   User.findOne({username: username}, function(error, foundUsername) {
-    if (error) return next(error);
+    if (error) return helper.mongooseValidationError(error, res);
     if (foundUsername) return registerError('username', res);
 
     User.findOne({email: email}, function(error, foundEmail) {
-      if (error) return next(error);
+      if (error) return helper.mongooseValidationError(error, res);
       if (foundEmail) return registerError('email address', res);
 
       var user = User({
+        username,
+        email,
+        password,
         name: {
           firstName,
           lastName
-        },
-        username,
-        email,
-        password
+        }
       });
 
       user.save(function(error) {
-        if (error) return next(error);
+        if (error) return helper.mongooseValidationError(error, res);
         returnWithJWT(user, 201, res);
       });
     });

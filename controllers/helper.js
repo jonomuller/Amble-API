@@ -3,11 +3,11 @@ module.exports.mongooseValidationError = function(error, res) {
 
   if (error.message != undefined) {
     message = error.message;
-  } else {
-    for (let key in error.errors) {
-      if (error.errors[key].message != undefined) {
-        message = error.errors[key].message;
-      }
+  }
+  
+  for (let key in error.errors) {
+    if (error.errors[key].message != undefined) {
+      message = error.errors[key].message;
     }
   }
 
