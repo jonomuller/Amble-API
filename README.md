@@ -75,8 +75,8 @@ Stores a given list of coordinates in the database, with a reference to the user
 
 - Parameters:
   - **name** _(required)_
-  - **owner** _(required)_
-  - **coordinates** _(required)_
+  - **owner [ObjectID]** _(required)_
+  - **coordinates [Number]** _(required)_
   - **time** _(required)_
   - **distance** _(required)_
   - **steps** _(required)_
