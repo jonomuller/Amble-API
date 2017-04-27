@@ -77,6 +77,9 @@ Stores a given list of coordinates in the database, with a reference to the user
   - **name** _(required)_
   - **owner** _(required)_
   - **coordinates** _(required)_
+  - **time** _(required)_
+  - **distance** _(required)_
+  - **steps** _(required)_
 
 - Success response:
   - Code: 201 Created
