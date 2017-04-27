@@ -9,7 +9,10 @@ var jwt,
       id: '0001',
       name: 'Test Walk',
       owner: '0001',
-      coordinates: '[[1.02, 3.204], [34543.234, 3432], [43.4, 76]]'
+      coordinates: '[[1.02, 3.204], [34543.234, 3432], [43.4, 76]]',
+      time: 234,
+      distance: 32545,
+      steps: 23590248950
     };
 
 describe('POST /create', function() {
@@ -50,7 +53,7 @@ describe('POST /create', function() {
         .expect('Content-Type', /json/)
         .expect(function(res) {
           res.body.success.should.be.equal(false);
-          res.body.error.should.be.equal('Please enter the name.')
+          res.body.error.should.be.equal('Please enter the walk name.')
         })
         .expect(400, done);
     });
