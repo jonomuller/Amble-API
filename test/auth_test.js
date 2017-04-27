@@ -105,7 +105,7 @@ describe('POST /register', function() {
         .expect('Content-Type', /json/)
         .expect(function(res) {
           res.body.success.should.be.equal(false);
-          res.body.error.should.be.equal('Please enter your username.')
+          res.body.error.should.be.equal('Path `username` is required.')
         })
         .expect(400, done);
     });
@@ -117,7 +117,7 @@ describe('POST /register', function() {
         .expect('Content-Type', /json/)
         .expect(function(res) {
           res.body.success.should.be.equal(false);
-          res.body.error.should.be.equal('Please enter your first name.')
+          res.body.error.should.be.equal('Path `name.firstName` is required.')
         })
         .expect(400, done);
     });
