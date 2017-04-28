@@ -23,9 +23,9 @@ POST /auth/login
 
 Logs the user in if their credentials are valid, returning a [JSON Web Token](https://jwt.io) (JWT).
 
-- Parameters:
-  - **username** _(required)_
-  - **password** _(required)_
+- Required Parameters:
+  - **username** _(String)_
+  - **password** _(String)_
   
 - Success response:
   - Code: 200 OK
@@ -44,12 +44,12 @@ POST /auth/register
 
 Registers a new user, returning a JWT.
 
-- Parameters:
-  - **username** _(required)_
-  - **email** _(required)_
-  - **password** _(required)_
-  - **firstName** _(required)_
-  - **lastName** _(required)_
+- Required Parameters:
+  - **username** _(String)_
+  - **email** _(String)_
+  - **password** _(String)_
+  - **firstName** _(String)_
+  - **lastName** _(String)_
   
 - Success response:
   - Code: 201 Created
@@ -73,10 +73,13 @@ Stores a given list of coordinates in the database, with a reference to the user
   - A JWT for a registered user must be supplied in the _Authorization_ field of the request header.
   - The token must be supplied in the format `JWT 'token'`
 
-- Parameters:
-  - **name** _(required)_
-  - **owner [ObjectID]** _(required)_
-  - **coordinates [Number]** _(required)_
+- Required Parameters:
+  - **name** _(String)_
+  - **owner** _(ObjectID)_
+  - **coordinates** _([[Number]])_
+  - **time** _(Number)_
+  - **distance** _(Number)_
+  - **steps** _(Number)_
 
 - Success response:
   - Code: 201 Created
@@ -100,8 +103,8 @@ Retrieves a walk from the database, given a walk ID.
   - A JWT for a registered user must be supplied in the _Authorization_ field of the request header.
   - The token must be supplied in the format `JWT 'token'`
 
-- Parameters:
-  - **walkID [ObjectID]** _(required)_
+- Required Parameters:
+  - **walkID** _(ObjectID)_
 
 - Success response:
   - Code: 200 OK
