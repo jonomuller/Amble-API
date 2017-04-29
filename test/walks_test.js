@@ -128,7 +128,7 @@ describe('GET /:walkID', function() {
 
     // Clear database
   after(function(done) {
-    helper.clearDB('users', done);
+    helper.clearDB('users');
     helper.clearDB('walks', done);
   });
 });
