@@ -3,11 +3,11 @@ const passport = require('passport'),
       LocalStrategy = require('passport-local').Strategy,
       JwtStrategy = passportJWT.Strategy,
       ExtractJwt = passportJWT.ExtractJwt,
-      config = require('./config'),
+      secret = require('./secret'),
       User = require('../models/user');
 
 const options = {
-  secretOrKey: config.jwtSecret,
+  secretOrKey: secret.jwtSecret,
   jwtFromRequest: ExtractJwt.fromAuthHeader(),
 }
 
