@@ -12,7 +12,8 @@ module.exports.getWalks = function(req, res, next) {
     walks.forEach(function(walk) {
       walkDetails.push({
         id: walk._id,
-        name: walk.name
+        name: walk.name,
+        createdAt: walk.createdAt
       });
     });
 
