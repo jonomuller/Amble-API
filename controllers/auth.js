@@ -1,12 +1,11 @@
 const jwt = require('jsonwebtoken'),
       config = require('../config/config'),
-      secret = require('../config/secret'),
       passport = require('passport'),
       User = require('../models/user'),
       helper = require('./helper');
 
 function returnWithJWT(user, status, res) {
-  token = jwt.sign(user, secret.jwtSecret);
+  token = jwt.sign(user, config.jwtSecret);
   res.status(status).json({
     success: true,
     user: user,
