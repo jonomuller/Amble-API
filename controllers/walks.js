@@ -11,25 +11,20 @@ s3.config.update({
 })
 
 module.exports.create = function(req, res, next) {
-  var name = req.body.name;
-  var owner = req.body.owner;
-  var coordinates = req.body.coordinates;
-  var time = req.body.time;
-  var distance = req.body.distance;
-  var steps = req.body.steps;
-
-  if (coordinates) coordinates = JSON.parse(coordinates);
+  var coordinates;
+  if (req.body.coordinates) coordinates = JSON.parse(req.body.coordinates);
 
   var walk = new Walk({
-    name,
-    owner,
+    name: req.body.name,
+    owner: req.body.owner,
     geometry: {
       type: 'MultiPoint',
       coordinates: coordinates
     },
-    time: time,
-    distance: distance,
-    steps: steps
+    image: req.body.image,
+    time: req.body.time,
+    distance: req.body.distance,
+    steps: req.body.steps
   });
 
   walk.save(function(error) {
