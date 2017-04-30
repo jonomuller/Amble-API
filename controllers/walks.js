@@ -11,6 +11,11 @@ module.exports.create = function(req, res, next) {
 
   if (coordinates) coordinates = JSON.parse(coordinates);
 
+  if (!req.file) return res.json({
+    success: false,
+    error: 'File `map` is required.'
+  })
+
   var walk = new Walk({
     name,
     owner,
