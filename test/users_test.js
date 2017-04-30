@@ -11,6 +11,7 @@ var jwt,
       name: 'Test Walk',
       owner: '0001',
       coordinates: '[[1.02, 3.204], [34543.234, 3432], [43.4, 76]]',
+      image: 'image_url',
       time: 234,
       distance: 32545,
       steps: 23590248950
