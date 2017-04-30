@@ -10,6 +10,7 @@ var jwt,
       name: 'Test Walk',
       owner: '0001',
       coordinates: '[[1.02, 3.204], [34543.234, 3432], [43.4, 76]]',
+      image: 'image_url',
       time: 234,
       distance: 32545,
       steps: 23590248950
@@ -38,7 +39,7 @@ describe('POST /create', function() {
         .send(testWalk)
         .expect('Content-Type', /json/)
         .expect(function(res) {
-          testWalk.id = res.body.walk._id
+          testWalk.id = res.body.walk._id;
           res.body.success.should.be.equal(true);
         })
         .expect(201, done);
@@ -128,7 +129,7 @@ describe('GET /:walkID', function() {
 
     // Clear database
   after(function(done) {
-    helper.clearDB('users', done);
+    helper.clearDB('users');
     helper.clearDB('walks', done);
   });
 });

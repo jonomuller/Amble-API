@@ -1,26 +1,31 @@
 const Walk = require('../models/walk'),
-      helper = require('./helper');
+      helper = require('./helper'),
+      config = require('../config/config'),
+      aws = require('aws-sdk'),
+      s3 = new aws.S3();
+
+s3.config.update({
+  region: config.awsRegion,
+  signatureVersion: 'v4',
+  accessKeyId: config.awsAccessKeyID,
+  secretAccessKey: config.awsSecretAccessKey
+})
 
 module.exports.create = function(req, res, next) {
-  var name = req.body.name;
-  var owner = req.body.owner;
-  var coordinates = req.body.coordinates;
-  var time = req.body.time;
-  var distance = req.body.distance;
-  var steps = req.body.steps;
-
-  if (coordinates) coordinates = JSON.parse(coordinates);
+  var coordinates;
+  if (req.body.coordinates) coordinates = JSON.parse(req.body.coordinates);
 
   var walk = new Walk({
-    name,
-    owner,
+    name: req.body.name,
+    owner: req.body.owner,
     geometry: {
       type: 'MultiPoint',
       coordinates: coordinates
     },
-    time: time,
-    distance: distance,
-    steps: steps
+    image: req.body.image,
+    time: req.body.time,
+    distance: req.body.distance,
+    steps: req.body.steps
   });
 
   walk.save(function(error) {
@@ -30,6 +35,28 @@ module.exports.create = function(req, res, next) {
       success: true,
       walk: walk
     });
+  });
+};
+
+module.exports.getMapImageURL = function(req, res, next) {
+  var params = {
+    Bucket: config.awsBucket,
+    Key: Date.now().toString() + '.jpg',
+    ACL: 'public-read',
+    ContentType: 'image/jpeg',
+    Expires: 60
+  }
+
+  s3.getSignedUrl('putObject', params, function(error, url) {
+    if (error) return res.status(500).json({
+      success: false,
+      error: 'Unable to generate signed URL for AWS.'
+    })
+
+    res.status(200).json({
+      success: true,
+      url: url
+    })
   });
 };
 

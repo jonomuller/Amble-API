@@ -16,6 +16,10 @@ const WalkSchema = new Schema({
     type: Schema.Types.MultiPoint,
     required: true
   },
+  image: {
+    type: String,
+    required: true
+  },
   time: {
     type: Number,
     required: true
@@ -28,6 +32,9 @@ const WalkSchema = new Schema({
     type: Number,
     required: true
   }
+},
+{
+  timestamps: true
 });
 
 module.exports = mongoose.model('Walk', WalkSchema);
