@@ -5,7 +5,8 @@ const Walk = require('../models/walk'),
       s3 = new aws.S3();
 
 s3.config.update({
-  // signatureVersion: 'v4',
+  region: config.awsRegion,
+  signatureVersion: 'v4',
   accessKeyId: config.awsAccessKeyID,
   secretAccessKey: config.awsSecretAccessKey
 })
@@ -37,10 +38,11 @@ module.exports.create = function(req, res, next) {
   });
 };
 
-module.exports.uploadMapImage = function(req, res, next) {
+module.exports.getMapImageURL = function(req, res, next) {
   var params = {
     Bucket: config.awsBucket,
-    Key: Date.now().toString(),
+    Key: Date.now().toString() + '.jpg',
+    ACL: 'public-read',
     ContentType: 'image/jpeg',
     Expires: 60
   }
@@ -48,7 +50,7 @@ module.exports.uploadMapImage = function(req, res, next) {
   s3.getSignedUrl('putObject', params, function(error, url) {
     if (error) return res.status(500).json({
       success: false,
-      error: 'Unable to retrieve signed URL for AWS.'
+      error: 'Unable to generate signed URL for AWS.'
     })
 
     res.status(200).json({
