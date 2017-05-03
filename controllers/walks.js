@@ -77,3 +77,34 @@ module.exports.getWalk = function(req, res, next) {
            });
   });
 };
+
+module.exports.deleteWalk = function(req, res, next) {
+  Walk.findByIdAndRemove(req.params.walkID, function(error, walk) {
+    if (error) return helper.mongooseValidationError(error, res)
+
+    if (!walk) return res.status(404).json({
+      success: false,
+      error: 'No walk with that ID can be found.'
+    })
+
+    var components = walk.image.split('/');
+    var imageKey = components[components.length - 1];
+    console.log(imageKey);
+
+    var params = {
+      Bucket: config.awsBucket,
+      Key: imageKey
+    }
+
+    s3.deleteObject(params, function(error, data) {
+      if (error || !data) return res.status(500).json({
+        success: false,
+        error: 'Image could not be deleted.'
+      })
+      
+      res.status(200).json({
+        success: true
+      })
+    });
+  });
+}
