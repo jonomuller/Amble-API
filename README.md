@@ -122,10 +122,10 @@ Retrieves a walk from the database, given a walk ID.
 #### Delete a walk
 
 ```
-DELETE /walks/:walkID/delete
+DELETE /walks/:walkID
 ```
 
-Deletes a walk from the database and its associated image on AWS S3.
+Deletes a walk from the database and its associated image on AWS S3, given a walk ID.
 
 - Authorization:
   - A JWT for a registered user must be supplied in the _Authorization_ field of the request header.

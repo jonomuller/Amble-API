@@ -6,6 +6,6 @@ const express = require('express'),
 walksRouter.post('/create', helper.jwtAuth, walks.create);
 walksRouter.get('/create/upload', helper.jwtAuth, walks.getMapImageURL);
 walksRouter.get('/:walkID', helper.jwtAuth, walks.getWalk);
-walksRouter.delete('/:walkID/delete', helper.jwtAuth, walks.deleteWalk);
+walksRouter.delete('/:walkID', helper.jwtAuth, walks.deleteWalk);
 
 module.exports = walksRouter;
