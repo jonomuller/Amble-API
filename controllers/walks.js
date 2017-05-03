@@ -101,12 +101,7 @@ module.exports.deleteWalk = function(req, res, next) {
         success: false,
         error: 'Image could not be deleted.'
       })
-
-      if (!data.DeleteMarker) return res.status(404).json({
-        success: false,
-        error: 'No image with that ID can be found.'
-      })
-
+      
       res.status(200).json({
         success: true
       })
