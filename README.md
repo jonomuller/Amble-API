@@ -119,6 +119,32 @@ Retrieves a walk from the database, given a walk ID.
 
 ---
 
+#### Delete a walk
+
+```
+DELETE /walks/:walkID/delete
+```
+
+Deletes a walk from the database and its associated image on AWS S3.
+
+- Authorization:
+  - A JWT for a registered user must be supplied in the _Authorization_ field of the request header.
+  - The token must be supplied in the format `JWT 'token'`
+
+- Required Parameters:
+  - **walkID** _(ObjectID)_
+
+- Success response:
+  - Code: 200 OK
+  - Content: A success flag
+
+- Errors:
+  - **401 Unauthorized** – no/invalid JWT provided
+  - **400 Bad Request** – walkID not of type ObjectID
+  - **404 Not Found** – a walk with ID _walkID_ could not be found in the database
+
+---
+
 ### Users
 
 #### Retrieves user's walks
