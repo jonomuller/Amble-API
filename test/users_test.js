@@ -133,9 +133,9 @@ describe('GET /search/:userInfo', function() {
         .expect(200, done);
     });
 
-    it('should return user when searching with valid last name', function(done) {
+    it('should return user when searching with valid last name (case insensitive)', function(done) {
       request(app)
-        .get(uriPrefix + '/search/' + lastName)
+        .get(uriPrefix + '/search/' + lastName.toUpperCase())
         .expect('Content-Type', /json/)
         .expect(function(res) {
           res.body.success.should.be.equal(true);
@@ -156,12 +156,21 @@ describe('GET /search/:userInfo', function() {
         })
         .expect(200, done);
     });
-  });
 
-  describe('Invalid user search', function() {
-    it('should return empty array with ', function(done) {
+    it('should return empty array with username not found', function(done) {
       request(app)
         .get(uriPrefix + '/search/invalid_username')
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(true);
+          res.body.users.should.have.length(0);
+        })
+        .expect(200, done);
+    });
+
+    it('should return empty array with name not found', function(done) {
+      request(app)
+        .get(uriPrefix + '/search/invalid name')
         .expect('Content-Type', /json/)
         .expect(function(res) {
           res.body.success.should.be.equal(true);
