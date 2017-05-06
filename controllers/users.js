@@ -28,14 +28,22 @@ module.exports.getWalks = function(req, res, next) {
 
 module.exports.search = function(req, res, next) {
   var userInfo = new RegExp('^' + req.params.userInfo + '$', 'i');
-  
-  User.findOne({$or:[{'username': userInfo}, {'name.firstName': userInfo}, {'name.lastName': userInfo}]}, function(error, user) {
+  var fullNameTerms = req.params.userInfo.split(' ');
+  var names = [];
+
+  for (let key in fullNameTerms) {
+    names[key] = new RegExp('^' + fullNameTerms[key] + '$', 'i');
+  }
+
+  console.log(userInfo);
+  User.find({$or:[{username: userInfo}, {'name.firstName': userInfo}, {'name.lastName': userInfo}, {email: userInfo},
+            {$and: [{'name.firstName': names[0]}, {'name.lastName': names[1]}]}]}, function(error, user) {
     if (error) return helper.mongooseValidationError(error, res);
 
-    if (!user) return res.status(404).json({
-                        success: false,
-                        error: 'No users could be found.'
-                      });
+    if (user.length == 0) return res.status(404).json({
+                            success: false,
+                            error: 'No users could be found.'
+                          });
 
     res.status(200).json({
       success: true,
