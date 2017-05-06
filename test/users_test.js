@@ -164,8 +164,8 @@ describe('GET /search/:userInfo', function() {
         .get(uriPrefix + '/search/invalid_username')
         .expect('Content-Type', /json/)
         .expect(function(res) {
-          res.body.success.should.be.equal(false);
-          res.body.error.should.be.equal('No users could be found.');
+          res.body.success.should.be.equal(true);
+          res.body.users.should.have.length(0);
         })
         .expect(200, done);
     });
