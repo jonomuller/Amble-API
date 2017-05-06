@@ -35,19 +35,18 @@ module.exports.search = function(req, res, next) {
     names[key] = new RegExp('^' + fullNameTerms[key] + '$', 'i');
   }
 
-  console.log(userInfo);
   User.find({$or:[{username: userInfo}, {'name.firstName': userInfo}, {'name.lastName': userInfo}, {email: userInfo},
-            {$and: [{'name.firstName': names[0]}, {'name.lastName': names[1]}]}]}, function(error, user) {
+            {$and: [{'name.firstName': names[0]}, {'name.lastName': names[1]}]}]}, function(error, users) {
     if (error) return helper.mongooseValidationError(error, res);
 
-    if (user.length == 0) return res.status(404).json({
+    if (users.length == 0) return res.status(404).json({
                             success: false,
                             error: 'No users could be found.'
                           });
 
     res.status(200).json({
       success: true,
-      user: user
+      users: users
     })
   });
 };
