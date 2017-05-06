@@ -159,7 +159,7 @@ describe('GET /search/:userInfo', function() {
   });
 
   describe('Invalid user search', function() {
-    it('should return error with username not found', function(done) {
+    it('should return empty array with ', function(done) {
       request(app)
         .get(uriPrefix + '/search/invalid_username')
         .expect('Content-Type', /json/)

@@ -41,11 +41,23 @@ module.exports.search = function(req, res, next) {
             function(error, users) {
     if (error) return helper.mongooseValidationError(error, res);
 
+    var userDetails = [];
 
+    users.forEach(function(user) {
+      userDetails.push({
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        name: {
+          firstName: user.name.firstName,
+          lastName: user.name.lastName
+        }
+      });
+    });
 
     res.status(200).json({
       success: true,
-      users: users
+      users: userDetails
     })
   });
 };
