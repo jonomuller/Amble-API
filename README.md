@@ -171,3 +171,23 @@ Retrieves the basic details about the walks owned by a user, given a user ID.
   - **400 Bad Request** – userID not of type ObjectID
   
 ---
+
+#### Search for users
+
+```
+GET /users/search/:userInfo
+```
+
+Returns a list of users matching the information provided (which could be a username, email or name).
+
+- Required Parameters:
+  - **userInfo** _(String)_
+
+- Success response:
+  - Code: 200 OK
+  - Content: A success flag and an array containing the matched users
+  
+- Errors:
+  - **400 Bad Request** – database validation error
+  
+---

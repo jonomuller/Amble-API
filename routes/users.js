@@ -4,5 +4,6 @@ const express = require('express'),
       helper = require('./helper');
 
 usersRouter.get('/:userID/walks', helper.jwtAuth, users.getWalks);
+usersRouter.get('/search/:userInfo', users.search);
 
 module.exports = usersRouter;
