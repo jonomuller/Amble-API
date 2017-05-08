@@ -1,7 +1,7 @@
 const mongoose = require('mongoose'),
       Schema = mongoose.Schema;
 
-var PointSchema = new Schema({
+var AchievementSchema = new Schema({
   name: {
     type: String,
     required: true
@@ -15,4 +15,4 @@ var PointSchema = new Schema({
   noId: true
 });
 
-module.exports = mongoose.model('Point', PointSchema);
+module.exports = mongoose.model('Achievement', AchievementSchema);

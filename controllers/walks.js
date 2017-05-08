@@ -1,5 +1,5 @@
 const Walk = require('../models/walk'),
-      Point = require('../models/point'),
+      Achievement = require('../models/point'),
       helper = require('./helper'),
       config = require('../config/config'),
       aws = require('aws-sdk'),
@@ -16,18 +16,18 @@ module.exports.create = function(req, res, next) {
   var coordinates;
   if (req.body.coordinates) coordinates = JSON.parse(req.body.coordinates);
 
-  var pointsArray = [];
+  var achievementsArray = [];
 
-  if (req.body.points) {
-    var points = JSON.parse(req.body.points);
+  if (req.body.achievements) {
+    var achievements = JSON.parse(req.body.achievements);
 
-    points.forEach(function(p) {
-      var point = new Point({
-        name: p.name,
-        value: p.value
+    achievements.forEach(function(a) {
+      var achievement = new Achievement({
+        name: a.name,
+        value: a.value
       })
 
-      pointsArray.push(point);
+      achievementsArray.push(achievement);
     })
   }
 
@@ -38,7 +38,7 @@ module.exports.create = function(req, res, next) {
       type: 'MultiPoint',
       coordinates: coordinates
     },
-    points: pointsArray,
+    achievements: achievementsArray,
     image: req.body.image,
     time: req.body.time,
     distance: req.body.distance,
