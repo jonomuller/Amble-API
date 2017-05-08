@@ -1,7 +1,7 @@
 const mongoose = require('mongoose'),
       Schema = mongoose.Schema;
 
-const PointSchema = new Schema({
+var PointSchema = new Schema({
   name: {
     type: String,
     required: true
@@ -12,4 +12,4 @@ const PointSchema = new Schema({
   }
 });
 
-module.exports = mongoose.model('Point', PointSchema);
+module.exports = PointSchema;

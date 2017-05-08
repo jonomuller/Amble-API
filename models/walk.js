@@ -1,7 +1,7 @@
 const mongoose = require('mongoose'),
       geoJSON = require('mongoose-geojson-schema'),
       Schema = mongoose.Schema,
-      Point = required('./point');
+      Point = require('./point')
 
 const WalkSchema = new Schema({
   name: {
@@ -22,8 +22,8 @@ const WalkSchema = new Schema({
     required: true
   },
   points: {
-    type: [Point],
-    required: true
+    type: [Point]
+    // required: true
   },
   time: {
     type: Number,

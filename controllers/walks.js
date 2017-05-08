@@ -1,5 +1,4 @@
 const Walk = require('../models/walk'),
-      Stat = require('../models/stat'),
       helper = require('./helper'),
       config = require('../config/config'),
       aws = require('aws-sdk'),
@@ -24,7 +23,6 @@ module.exports.create = function(req, res, next) {
       coordinates: coordinates
     },
     image: req.body.image,
-    points: req.body.points,
     time: req.body.time,
     distance: req.body.distance,
     steps: req.body.steps

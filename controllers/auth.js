@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken'),
       config = require('../config/config'),
       passport = require('passport'),
       User = require('../models/user'),
-      Stat = require('../models/stat'),
       helper = require('./helper');
 
 function returnWithJWT(user, status, res) {
@@ -55,24 +54,15 @@ module.exports.register = function(req, res, next) {
         name: {
           firstName: firstName,
           lastName: lastName
-        }
+        },
+        score: 0,
+        distance: 0,
+        steps: 0
       });
 
-      user.save(function(error, createdUser) {
+      user.save(function(error) {
         if (error) return helper.mongooseValidationError(error, res);
-        console.log(createdUser);
-        var stat = Stat({
-          user: createdUser._id,
-          score: 0,
-          distance: 0,
-          steps: 0
-        });
-
-        stat.save(function(error, stat1) {
-          if (error) return helper.mongooseValidationError(error, res);
-          console.log(stat1)
-          returnWithJWT(user, 201, res);
-        });
+        returnWithJWT(user, 201, res);
       });
     });
   });
