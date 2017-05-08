@@ -10,6 +10,9 @@ var PointSchema = new Schema({
     type: Number,
     required: true
   }
+},
+{
+  noId: true
 });
 
-module.exports = PointSchema;
+module.exports = mongoose.model('Point', PointSchema);

@@ -1,4 +1,5 @@
 const Walk = require('../models/walk'),
+      Point = require('../models/point'),
       helper = require('./helper'),
       config = require('../config/config'),
       aws = require('aws-sdk'),
@@ -15,6 +16,21 @@ module.exports.create = function(req, res, next) {
   var coordinates;
   if (req.body.coordinates) coordinates = JSON.parse(req.body.coordinates);
 
+  var pointsArray = [];
+
+  if (req.body.points) {
+    var points = JSON.parse(req.body.points);
+
+    points.forEach(function(p) {
+      var point = new Point({
+        name: p.name,
+        value: p.value
+      })
+
+      pointsArray.push(point);
+    })
+  }
+
   var walk = new Walk({
     name: req.body.name,
     owner: req.body.owner,
@@ -22,6 +38,7 @@ module.exports.create = function(req, res, next) {
       type: 'MultiPoint',
       coordinates: coordinates
     },
+    points: pointsArray,
     image: req.body.image,
     time: req.body.time,
     distance: req.body.distance,
