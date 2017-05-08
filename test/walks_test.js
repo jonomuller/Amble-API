@@ -11,6 +11,7 @@ var jwt,
       owner: '0001',
       coordinates: '[[1.02, 3.204], [34543.234, 3432], [43.4, 76]]',
       image: 'image_url',
+      achievements: '[{"name": "DISTANCE", "value": 1234}, {"name": "DAY_STREAK", "value": 200}]',
       time: 234,
       distance: 32545,
       steps: 23590248950
@@ -41,6 +42,7 @@ describe('POST /create', function() {
         .expect(function(res) {
           testWalk.id = res.body.walk._id;
           res.body.success.should.be.equal(true);
+          res.body.walk.achievements.should.have.length(2);
         })
         .expect(201, done);
     });
@@ -80,6 +82,21 @@ describe('POST /create', function() {
           res.body.error.should.be.equal("jwt malformed")
         })
         .expect(401, done);
+    })
+
+    it('should fail with invalid achievement type', function(done) {
+      var invalid_name = 'invalid_name';
+      testWalk.achievements = '[{"name": "DISTANCE", "value": 1234}, {"name": "' + invalid_name + '", "value": 200}]';
+      request(app)
+        .post(uriPrefix + '/create')
+        .set('Authorization', 'JWT ' + jwt)
+        .send(testWalk)
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(false);
+          res.body.error.should.be.equal('`' + invalid_name + '` is an invalid achievement type.')
+        })
+        .expect(400, done);
     })
   });
 });

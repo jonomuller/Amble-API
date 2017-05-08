@@ -16,7 +16,8 @@ s3.config.update({
 // Object.freeze prevents object from changing
 const AchievementTypes = Object.freeze({
   DISTANCE: 1,
-  STREAK: 2
+  DAY_STREAK: 2,
+  GROUP: 3
 })
 
 function isValidAchievement(achievement) {
