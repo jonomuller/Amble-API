@@ -28,12 +28,6 @@ const UserSchema = new Schema({
     type: String,
     required: true
   },
-  score: {
-    type: Number
-  },
-  distance: {
-    type: Number
-  }
 });
 
 // Encrypt password when created or modified
