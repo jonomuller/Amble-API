@@ -12,23 +12,48 @@ s3.config.update({
   secretAccessKey: config.awsSecretAccessKey
 })
 
+// Object defined as an enum to list possible achievement types
+// Object.freeze prevents object from changing
+const AchievementTypes = Object.freeze({
+  DISTANCE: 1,
+  STREAK: 2
+})
+
+function isValidAchievement(achievement) {
+  for (let key in AchievementTypes) {
+    if (achievement == key) {
+      return true
+    }
+  }
+
+  return false
+}
+
 module.exports.create = function(req, res, next) {
   var coordinates;
   if (req.body.coordinates) coordinates = JSON.parse(req.body.coordinates);
 
-  var achievementsArray = [];
+  var achievementSchemas = [];
 
   if (req.body.achievements) {
     var achievements = JSON.parse(req.body.achievements);
 
-    achievements.forEach(function(a) {
+    for (let key in achievements) {
+      var a = achievements[key];
+
+      if (!isValidAchievement(a.name.toUpperCase())) 
+        return res.status(400).json({
+          success: false,
+          error: '`' + a.name + '` is an invalid achievement type.'
+        });
+
       var achievement = new Achievement({
         name: a.name,
         value: a.value
       })
 
-      achievementsArray.push(achievement);
-    })
+      achievementSchemas.push(achievement);
+    }
   }
 
   var walk = new Walk({
@@ -38,7 +63,7 @@ module.exports.create = function(req, res, next) {
       type: 'MultiPoint',
       coordinates: coordinates
     },
-    achievements: achievementsArray,
+    achievements: achievementSchemas,
     image: req.body.image,
     time: req.body.time,
     distance: req.body.distance,
