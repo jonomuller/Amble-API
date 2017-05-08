@@ -20,6 +20,16 @@ const WalkSchema = new Schema({
     type: String,
     required: true
   },
+  points: [{
+    name: {
+      type: String,
+      required: true
+    },
+    value: {
+      type: Number,
+      required: true
+    }
+  }],
   time: {
     type: Number,
     required: true
