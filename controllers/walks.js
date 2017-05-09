@@ -1,4 +1,5 @@
 const Walk = require('../models/walk'),
+      User = require('../models/user'),
       Achievement = require('../models/point'),
       helper = require('./helper'),
       config = require('../config/config'),
@@ -35,6 +36,7 @@ module.exports.create = function(req, res, next) {
   if (req.body.coordinates) coordinates = JSON.parse(req.body.coordinates);
 
   var achievementSchemas = [];
+  var score = 0;
 
   if (req.body.achievements) {
     var achievements = JSON.parse(req.body.achievements);
@@ -53,9 +55,13 @@ module.exports.create = function(req, res, next) {
         value: a.value
       })
 
+      score += a.value;
       achievementSchemas.push(achievement);
     }
   }
+
+  var distance = req.body.distance;
+  var steps = req.body.steps;
 
   var walk = new Walk({
     name: req.body.name,
@@ -67,16 +73,25 @@ module.exports.create = function(req, res, next) {
     achievements: achievementSchemas,
     image: req.body.image,
     time: req.body.time,
-    distance: req.body.distance,
-    steps: req.body.steps
+    distance: distance,
+    steps: steps
   });
 
   walk.save(function(error) {
     if (error) return helper.mongooseValidationError(error, res);
     
-    res.status(201).json({
-      success: true,
-      walk: walk
+    User.findByIdAndUpdate(walk.owner, {$inc: {score: score, distance: distance, steps: steps}}, function(error, user) {
+      if (error) return helper.mongooseValidationError(error, res);
+
+      if (!user) return res.status(404).json({
+        success: false,
+        error: 'The owner specified for the walk is not a valid user.'
+      })
+
+      res.status(201).json({
+        success: true,
+        walk: walk
+      });
     });
   });
 };

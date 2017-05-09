@@ -95,8 +95,26 @@ describe('POST /create', function() {
         .expect(function(res) {
           res.body.success.should.be.equal(false);
           res.body.error.should.be.equal('`' + invalid_name + '` is an invalid achievement type.')
+          testWalk.achievements = null;
         })
         .expect(400, done);
+    })
+
+    it('should fail with invalid user ID', function(done) {
+      var notFoundID = '000000000000';
+      validID = testWalk.owner;
+      testWalk.owner = notFoundID;
+      request(app)
+        .post(uriPrefix + '/create')
+        .set('Authorization', 'JWT ' + jwt)
+        .send(testWalk)
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(false);
+          res.body.error.should.be.equal('The owner specified for the walk is not a valid user.');
+          testWalk.owner = validID;
+        })
+        .expect(404, done);
     })
   });
 });
