@@ -95,6 +95,53 @@ describe('GET /:userID/walks', function() {
   });
 });
 
+describe('GET /:userID', function(){
+
+  describe('Valid user retrieval', function() {
+    it('should return user given valid ID', function(done) {
+      request(app)
+        .get(uriPrefix + userID)
+        .set('Authorization', 'JWT ' + jwt)
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(true);
+          res.body.user._id.should.be.equal(userID);
+        })
+        .expect(200, done);
+    });
+  });
+
+  describe('Invalid user retrieval', function() {
+    it('should fail with invalid user ID', function(done) {
+      var invalid_id = 'invalid_id';
+      request(app)
+        .get(uriPrefix + invalid_id)
+        .set('Authorization', 'JWT ' + jwt)
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(false);
+          res.body.error.should.be.equal('Cast to ObjectId failed for value "' 
+            + invalid_id + '" at path "_id" for model "User"');
+        })
+        .expect(400, done);
+    });
+
+    it('should fail with user ID not found', function(done) {
+      var notFoundID = '000000000000';
+      request(app)
+        .get(uriPrefix + notFoundID)
+        .set('Authorization', 'JWT ' + jwt)
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(false);
+          res.body.error.should.be.equal('No user could be found for that ID.');
+        })
+        .expect(404, done);
+    });
+  });
+
+});
+
 describe('GET /search/:userInfo', function() {
   describe('Valid user search', function () {
     it('should return user when searching with valid username', function(done) {
