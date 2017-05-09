@@ -54,10 +54,7 @@ module.exports.register = function(req, res, next) {
         name: {
           firstName: firstName,
           lastName: lastName
-        },
-        score: 0,
-        distance: 0,
-        steps: 0
+        }
       });
 
       user.save(function(error) {

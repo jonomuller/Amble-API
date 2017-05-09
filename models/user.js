@@ -30,15 +30,15 @@ const UserSchema = new Schema({
   },
   score: {
     type: Number,
-    required: true
+    default: 0,
   },
   distance: {
     type: Number,
-    required: true
+    default: 0
   },
   steps: {
     type: Number,
-    required: true
+    default: 0
   }
 });
 

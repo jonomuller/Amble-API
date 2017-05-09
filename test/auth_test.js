@@ -25,10 +25,7 @@ describe('POST /login', function() {
       name: {
         firstName: 'Bob',
         lastName: 'Bobson'
-      },
-      score: 0,
-      distance: 0,
-      steps: 0
+      }
     })
     user.save(done);
   });
