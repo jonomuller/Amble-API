@@ -2,6 +2,22 @@ const Walk = require('../models/walk'),
       User = require('../models/user'),
       helper = require('./helper');
 
+module.exports.getInfo = function(req, res, next) {
+  User.findById(req.params.userID, function(error, user) {
+    if (error) return helper.mongooseValidationError(error, res);
+
+    if (!user) return res.status(404).json({
+      success: false,
+      error: 'No user could be found for that ID.'
+    })
+
+    res.status(200).json({
+      success: true,
+      user: user
+    })
+  })
+};
+
 module.exports.getWalks = function(req, res, next) {
   var id = req.params.userID;
 
