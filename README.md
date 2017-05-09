@@ -23,9 +23,9 @@ POST /auth/login
 
 Logs the user in if their credentials are valid, returning a [JSON Web Token](https://jwt.io) (JWT).
 
-- Required Parameters:
-  - **username** _(String)_
-  - **password** _(String)_
+- Parameters:
+  - **username**: String _(required)_
+  - **password**: String _(required)_
   
 - Success response:
   - Code: 200 OK
@@ -44,12 +44,12 @@ POST /auth/register
 
 Registers a new user, returning a JWT.
 
-- Required Parameters:
-  - **username** _(String)_
-  - **email** _(String)_
-  - **password** _(String)_
-  - **firstName** _(String)_
-  - **lastName** _(String)_
+- Parameters:
+  - **username**: String _(required)_
+  - **email**: String _(required)_
+  - **password**: String _(required)_
+  - **firstName**: String _(required)_
+  - **lastName**: String _(required)_
   
 - Success response:
   - Code: 201 Created
@@ -75,13 +75,20 @@ Stores a given list of coordinates in the database, with a reference to the user
   - A JWT for a registered user must be supplied in the _Authorization_ field of the request header.
   - The token must be supplied in the format `JWT 'token'`
 
-- Required Parameters:
-  - **name** _(String)_
-  - **owner** _(ObjectID)_
-  - **coordinates** _([[Number]])_
-  - **time** _(Number)_
-  - **distance** _(Number)_
-  - **steps** _(Number)_
+- Parameters:
+  - **name**: String _(required)_
+  - **owner**: ObjectID _(required)_
+  - **coordinates**: String _(required)_
+  - **achievements**: String
+  - **image**: String
+  - **time**: Number _(required)_
+  - **distance**: Number _(required)_
+  - **steps**: Number _(required)_
+  
+- Additional information:
+  - **coordinates** should contain a JSON string representing an array of arrays of numbers, e.g. [[1,2],[3,4]]
+  - **achievements** should contain a JSON string representing an array of dictionaries with keys _name_ and _value_, e.g. [{"name":"DAY_STREAK","value":4},{"name":"DISTANCE","value":100}]
+    - The _name_ key should be of the following values: DAY_STREAK, DISTANCE, GROUP
 
 - Success response:
   - Code: 201 Created
@@ -105,8 +112,8 @@ Retrieves a walk from the database, given a walk ID.
   - A JWT for a registered user must be supplied in the _Authorization_ field of the request header.
   - The token must be supplied in the format `JWT 'token'`
 
-- Required Parameters:
-  - **walkID** _(ObjectID)_
+- Parameters:
+  - **walkID**: ObjectID _(required)_
 
 - Success response:
   - Code: 200 OK
@@ -131,8 +138,8 @@ Deletes a walk from the database and its associated image on AWS S3, given a wal
   - A JWT for a registered user must be supplied in the _Authorization_ field of the request header.
   - The token must be supplied in the format `JWT 'token'`
 
-- Required Parameters:
-  - **walkID** _(ObjectID)_
+- Parameters:
+  - **walkID**: ObjectID _(required)_
 
 - Success response:
   - Code: 200 OK
@@ -159,8 +166,8 @@ Retrieves the basic details about the walks owned by a user, given a user ID.
   - A JWT for a registered user must be supplied in the _Authorization_ field of the request header.
   - The token must be supplied in the format `JWT 'token'`
 
-- Required Parameters:
-  - **userID** _(ObjectID)_
+- Parameters:
+  - **userID**: ObjectID _(required)_
 
 - Success response:
   - Code: 200 OK
@@ -180,8 +187,8 @@ GET /users/search/:userInfo
 
 Returns a list of users matching the information provided (which could be a username, email or name).
 
-- Required Parameters:
-  - **userInfo** _(String)_
+- Parameters:
+  - **userInfo**: String _(required)_
 
 - Success response:
   - Code: 200 OK
