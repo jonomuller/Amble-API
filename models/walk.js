@@ -1,6 +1,8 @@
 const mongoose = require('mongoose'),
       geoJSON = require('mongoose-geojson-schema'),
-      Schema = mongoose.Schema;
+      Schema = mongoose.Schema,
+      Achievement = require('./point'),
+      AchievementSchema = mongoose.model('Achievement').schema;
 
 const WalkSchema = new Schema({
   name: {
@@ -20,6 +22,7 @@ const WalkSchema = new Schema({
     type: String,
     required: true
   },
+  achievements: [AchievementSchema],
   time: {
     type: Number,
     required: true

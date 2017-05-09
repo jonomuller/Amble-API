@@ -1,4 +1,6 @@
 const Walk = require('../models/walk'),
+      User = require('../models/user'),
+      Achievement = require('../models/point'),
       helper = require('./helper'),
       config = require('../config/config'),
       aws = require('aws-sdk'),
@@ -11,9 +13,55 @@ s3.config.update({
   secretAccessKey: config.awsSecretAccessKey
 })
 
+// Object defined as an enum to list possible achievement types
+// Object.freeze prevents object from changing
+const AchievementTypes = Object.freeze({
+  DISTANCE: 1,
+  DAY_STREAK: 2,
+  GROUP: 3
+})
+
+function isValidAchievement(achievement) {
+  for (let key in AchievementTypes) {
+    if (achievement == key) {
+      return true
+    }
+  }
+
+  return false
+}
+
 module.exports.create = function(req, res, next) {
   var coordinates;
   if (req.body.coordinates) coordinates = JSON.parse(req.body.coordinates);
+
+  var achievementSchemas = [];
+  var score = 0;
+
+  if (req.body.achievements) {
+    var achievements = JSON.parse(req.body.achievements);
+
+    for (let key in achievements) {
+      var a = achievements[key];
+
+      if (!isValidAchievement(a.name.toUpperCase())) 
+        return res.status(400).json({
+          success: false,
+          error: '`' + a.name + '` is an invalid achievement type.'
+        });
+
+      var achievement = new Achievement({
+        name: a.name,
+        value: a.value
+      })
+
+      score += a.value;
+      achievementSchemas.push(achievement);
+    }
+  }
+
+  var distance = req.body.distance;
+  var steps = req.body.steps;
 
   var walk = new Walk({
     name: req.body.name,
@@ -22,18 +70,28 @@ module.exports.create = function(req, res, next) {
       type: 'MultiPoint',
       coordinates: coordinates
     },
+    achievements: achievementSchemas,
     image: req.body.image,
     time: req.body.time,
-    distance: req.body.distance,
-    steps: req.body.steps
+    distance: distance,
+    steps: steps
   });
 
   walk.save(function(error) {
     if (error) return helper.mongooseValidationError(error, res);
     
-    res.status(201).json({
-      success: true,
-      walk: walk
+    User.findByIdAndUpdate(walk.owner, {$inc: {score: score, distance: distance, steps: steps}}, function(error, user) {
+      if (error) return helper.mongooseValidationError(error, res);
+
+      if (!user) return res.status(404).json({
+        success: false,
+        error: 'The owner specified for the walk is not a valid user.'
+      })
+
+      res.status(201).json({
+        success: true,
+        walk: walk
+      });
     });
   });
 };

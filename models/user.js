@@ -29,10 +29,16 @@ const UserSchema = new Schema({
     required: true
   },
   score: {
-    type: Number
+    type: Number,
+    default: 0,
   },
   distance: {
-    type: Number
+    type: Number,
+    default: 0
+  },
+  steps: {
+    type: Number,
+    default: 0
   }
 });
 

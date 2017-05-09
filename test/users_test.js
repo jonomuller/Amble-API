@@ -17,13 +17,19 @@ var jwt,
       steps: 23590248950
     };
 
+var username = 'bob1234',
+    email = 'bob@bobson.com',
+    password = 'amble4lyfe',
+    firstName = 'Bob',
+    lastName = 'Bobson'
+
 describe('GET /:userID/walks', function() {
 
   before(function(done) {
     request(app)
       .post('/api/auth/register')
-      .send({username: 'bob1234', email: 'bob@bobson.com', 
-        password: 'amble4lyfe', firstName: 'Bob', lastName: 'Bobson'})
+      .send({username: username, email: email, 
+        password: password, firstName: firstName, lastName: lastName})
       .end(function(err, res) {
         if (err) return done(err);
         jwt = res.body.jwt;
@@ -85,7 +91,143 @@ describe('GET /:userID/walks', function() {
 
   // Clear database
   after(function(done) {
-    helper.clearDB('users');
     helper.clearDB('walks', done);
+  });
+});
+
+describe('GET /:userID', function(){
+
+  describe('Valid user retrieval', function() {
+    it('should return user given valid ID', function(done) {
+      request(app)
+        .get(uriPrefix + userID)
+        .set('Authorization', 'JWT ' + jwt)
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(true);
+          res.body.user._id.should.be.equal(userID);
+        })
+        .expect(200, done);
+    });
+  });
+
+  describe('Invalid user retrieval', function() {
+    it('should fail with invalid user ID', function(done) {
+      var invalid_id = 'invalid_id';
+      request(app)
+        .get(uriPrefix + invalid_id)
+        .set('Authorization', 'JWT ' + jwt)
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(false);
+          res.body.error.should.be.equal('Cast to ObjectId failed for value "' 
+            + invalid_id + '" at path "_id" for model "User"');
+        })
+        .expect(400, done);
+    });
+
+    it('should fail with user ID not found', function(done) {
+      var notFoundID = '000000000000';
+      request(app)
+        .get(uriPrefix + notFoundID)
+        .set('Authorization', 'JWT ' + jwt)
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(false);
+          res.body.error.should.be.equal('No user could be found for that ID.');
+        })
+        .expect(404, done);
+    });
+  });
+
+});
+
+describe('GET /search/:userInfo', function() {
+  describe('Valid user search', function () {
+    it('should return user when searching with valid username', function(done) {
+      request(app)
+        .get(uriPrefix + '/search/' + username)
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(true);
+          res.body.users.should.have.length(1);
+          res.body.users[0].username.should.be.equal(username);
+        })
+        .expect(200, done);
+    });
+
+    it('should return user when searching with valid email', function(done) {
+      request(app)
+        .get(uriPrefix + '/search/' + email)
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(true);
+          res.body.users.should.have.length(1);
+          res.body.users[0].username.should.be.equal(username);
+        })
+        .expect(200, done);
+    });
+
+    it('should return user when searching with valid first name', function(done) {
+      request(app)
+        .get(uriPrefix + '/search/' + firstName)
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(true);
+          res.body.users.should.have.length(1);
+          res.body.users[0].username.should.be.equal(username);
+        })
+        .expect(200, done);
+    });
+
+    it('should return user when searching with valid last name (case insensitive)', function(done) {
+      request(app)
+        .get(uriPrefix + '/search/' + lastName.toUpperCase())
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(true);
+          res.body.users.should.have.length(1);
+          res.body.users[0].username.should.be.equal(username);
+        })
+        .expect(200, done);
+    });
+
+    it('should return user when searching with valid full name', function(done) {
+      request(app)
+        .get(uriPrefix + '/search/' + firstName + ' ' + lastName)
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(true);
+          res.body.users.should.have.length(1);
+          res.body.users[0].username.should.be.equal(username);
+        })
+        .expect(200, done);
+    });
+
+    it('should return empty array with username not found', function(done) {
+      request(app)
+        .get(uriPrefix + '/search/invalid_username')
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(true);
+          res.body.users.should.have.length(0);
+        })
+        .expect(200, done);
+    });
+
+    it('should return empty array with name not found', function(done) {
+      request(app)
+        .get(uriPrefix + '/search/invalid name')
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(true);
+          res.body.users.should.have.length(0);
+        })
+        .expect(200, done);
+    });
+  });
+
+  after(function(done) {
+    helper.clearDB('users', done);
   });
 });
