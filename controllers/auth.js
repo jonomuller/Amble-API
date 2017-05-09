@@ -48,12 +48,12 @@ module.exports.register = function(req, res, next) {
       if (foundEmail) return registerError('email address', res);
 
       var user = User({
-        username,
-        email,
-        password,
+        username: username,
+        email: email,
+        password: password,
         name: {
-          firstName,
-          lastName
+          firstName: firstName,
+          lastName: lastName
         }
       });
 
