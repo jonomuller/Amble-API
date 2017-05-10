@@ -10,22 +10,22 @@ GET /users/:userID
 
 Retrieves information about a user, given a user ID.
 
-### Authorization
+### Authorization
 
 - A JWT for a registered user must be supplied in the _Authorization_ field of the request header.
 - The token must be supplied in the format `JWT 'token'`
 
-### Parameters
+### Parameters
 
 - **userID**: ObjectID _(required)_
 
-### Success response
+### Success response
 
 - Code: 200 OK
 - Content: A success flag and an a User object
 
 ### Errors
 
-- **401 Unauthorized** – no/invalid JWT provided
 - **400 Bad Request** – userID not of type ObjectID
+- **401 Unauthorized** – no/invalid JWT provided
 - **404 Not Found** – user does not exist
