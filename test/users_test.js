@@ -1,6 +1,6 @@
 const request = require('supertest'),
       app = require('../app'),
-      uriPrefix = '/api/users/'
+      uriPrefix = '/api/users'
       mongoose = require('mongoose'),
       helper = require('./helper');
 
@@ -22,6 +22,9 @@ var username = 'bob1234',
     password = 'amble4lyfe',
     firstName = 'Bob',
     lastName = 'Bobson'
+
+var invalidID = 'invalid_id',
+    notFoundID = '000000000000'
 
 describe('GET /:userID/walks', function() {
 
@@ -60,7 +63,6 @@ describe('GET /:userID/walks', function() {
     });
 
     it('should return empty array for user with no walks', function(done) {
-      var notFoundID = '000000000000'
       request(app)
         .get(uriPrefix + '/' + notFoundID + '/walks')
         .set('Authorization', 'JWT ' + jwt)
@@ -75,15 +77,14 @@ describe('GET /:userID/walks', function() {
 
   describe('Invalid walks retrieval', function() {
     it('should fail with invalid ID', function(done) {
-      let invalid_id = "invalid_id"
       request(app)
-        .get(uriPrefix + '/' + invalid_id + '/walks')
+        .get(uriPrefix + '/' + invalidID + '/walks')
         .set('Authorization', 'JWT ' + jwt)
         .expect('Content-Type', /json/)
         .expect(function(res) {
           res.body.success.should.be.equal(false);
           res.body.error.should.be.equal('Cast to ObjectId failed for value "' 
-            + invalid_id + '" at path "owner" for model "Walk"')
+            + invalidID + '" at path "owner" for model "Walk"')
         })
         .expect(400, done);
     });
@@ -100,7 +101,7 @@ describe('GET /:userID', function(){
   describe('Valid user retrieval', function() {
     it('should return user given valid ID', function(done) {
       request(app)
-        .get(uriPrefix + userID)
+        .get(uriPrefix + '/' + userID)
         .set('Authorization', 'JWT ' + jwt)
         .expect('Content-Type', /json/)
         .expect(function(res) {
@@ -113,23 +114,21 @@ describe('GET /:userID', function(){
 
   describe('Invalid user retrieval', function() {
     it('should fail with invalid user ID', function(done) {
-      var invalid_id = 'invalid_id';
       request(app)
-        .get(uriPrefix + invalid_id)
+        .get(uriPrefix + '/' + invalidID)
         .set('Authorization', 'JWT ' + jwt)
         .expect('Content-Type', /json/)
         .expect(function(res) {
           res.body.success.should.be.equal(false);
           res.body.error.should.be.equal('Cast to ObjectId failed for value "' 
-            + invalid_id + '" at path "_id" for model "User"');
+            + invalidID + '" at path "_id" for model "User"');
         })
         .expect(400, done);
     });
 
     it('should fail with user ID not found', function(done) {
-      var notFoundID = '000000000000';
       request(app)
-        .get(uriPrefix + notFoundID)
+        .get(uriPrefix + '/' + notFoundID)
         .set('Authorization', 'JWT ' + jwt)
         .expect('Content-Type', /json/)
         .expect(function(res) {
@@ -224,6 +223,52 @@ describe('GET /search/:userInfo', function() {
           res.body.users.should.have.length(0);
         })
         .expect(200, done);
+    });
+  });
+});
+
+describe('GET /:userID/register/:token', function() {
+
+  var deviceToken = 'device_token';
+
+  describe('Valid token registration', function() {
+    it('should succeed with valid user ID and valid token', function(done) {
+      request(app)
+        .get(uriPrefix + '/' + userID + '/register/' + deviceToken)
+        .set('Authorization', 'JWT ' + jwt)
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(true);
+          res.body.user.deviceToken.should.be.equal(deviceToken);
+        })
+        .expect(200, done);
+    });
+  });
+
+  describe('Invalid device registration', function() {
+    it('should return error with invalid user ID', function(done) {
+      request(app)
+        .get(uriPrefix + '/' + invalidID + '/register/' + deviceToken)
+        .set('Authorization', 'JWT ' + jwt)
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(false);
+          res.body.error.should.be.equal('Cast to ObjectId failed for value "' 
+            + invalidID + '" at path "_id" for model "User"');
+        })
+        .expect(400, done);
+    });
+
+    it('should return error with user ID not found', function(done) {
+      request(app)
+        .get(uriPrefix + '/' + notFoundID + '/register/' + deviceToken)
+        .set('Authorization', 'JWT ' + jwt)
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(false);
+          res.body.error.should.be.equal('User does not exist.');
+        })
+        .expect(404, done);
     });
   });
 
