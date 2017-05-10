@@ -34,10 +34,7 @@ module.exports.login = function(req, res, next) {
 
 module.exports.register = function(req, res, next) {
   var username = req.body.username,
-      email = req.body.email,
-      password = req.body.password,
-      firstName = req.body.firstName,
-      lastName = req.body.lastName;
+      email = req.body.email;
 
   User.findOne({username: username}, function(error, foundUsername) {
     if (error) return helper.mongooseValidationError(error, res);
@@ -50,11 +47,12 @@ module.exports.register = function(req, res, next) {
       var user = User({
         username: username,
         email: email,
-        password: password,
+        password: req.body.password,
         name: {
-          firstName: firstName,
-          lastName: lastName
-        }
+          firstName: req.body.lastName,
+          lastName: req.body.lastName
+        },
+        deviceToken: req.body.deviceToken
       });
 
       user.save(function(error) {
