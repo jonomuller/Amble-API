@@ -20,7 +20,7 @@ Registers or updates a device token for a user, given their user ID.
 - Code: 200 OK
 - Content: A success flag and the updated User object
   
-### Errors
+### Errors
 
 - **400 Bad Request** – database validation error
 - **401 Unauthorized** – no/invalid JWT provided
