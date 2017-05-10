@@ -79,7 +79,7 @@ module.exports.search = function(req, res, next) {
 };
 
 module.exports.registerToken = function(req, res, next) {
-  User.findByIdAndUpdate(req.params.userID, {deviceToken: req.params.token}, function(error, user) {
+  User.findByIdAndUpdate(req.params.userID, {deviceToken: req.params.token}, {new: true}, function(error, user) {
     if (error) return helper.mongooseValidationError(error, res);
 
     if (!user) return res.status(404).json({
@@ -88,7 +88,8 @@ module.exports.registerToken = function(req, res, next) {
     })
 
     res.status(200).json({
-      success: true
+      success: true,
+      user: user
     })
   });
 };

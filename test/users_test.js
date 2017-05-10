@@ -239,6 +239,7 @@ describe('GET /:userID/register/:token', function() {
         .expect('Content-Type', /json/)
         .expect(function(res) {
           res.body.success.should.be.equal(true);
+          res.body.user.deviceToken.should.be.equal(deviceToken);
         })
         .expect(200, done);
     });
