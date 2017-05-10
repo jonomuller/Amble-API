@@ -49,7 +49,7 @@ module.exports.register = function(req, res, next) {
         email: email,
         password: req.body.password,
         name: {
-          firstName: req.body.lastName,
+          firstName: req.body.firstName,
           lastName: req.body.lastName
         },
         deviceToken: req.body.deviceToken

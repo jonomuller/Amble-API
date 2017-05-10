@@ -1,6 +1,6 @@
 const request = require('supertest'),
       app = require('../app'),
-      uriPrefix = '/api/users/'
+      uriPrefix = '/api/users'
       mongoose = require('mongoose'),
       helper = require('./helper');
 
@@ -100,7 +100,7 @@ describe('GET /:userID', function(){
   describe('Valid user retrieval', function() {
     it('should return user given valid ID', function(done) {
       request(app)
-        .get(uriPrefix + userID)
+        .get(uriPrefix + '/' + userID)
         .set('Authorization', 'JWT ' + jwt)
         .expect('Content-Type', /json/)
         .expect(function(res) {
@@ -115,7 +115,7 @@ describe('GET /:userID', function(){
     it('should fail with invalid user ID', function(done) {
       var invalid_id = 'invalid_id';
       request(app)
-        .get(uriPrefix + invalid_id)
+        .get(uriPrefix + '/' + invalid_id)
         .set('Authorization', 'JWT ' + jwt)
         .expect('Content-Type', /json/)
         .expect(function(res) {
@@ -129,7 +129,7 @@ describe('GET /:userID', function(){
     it('should fail with user ID not found', function(done) {
       var notFoundID = '000000000000';
       request(app)
-        .get(uriPrefix + notFoundID)
+        .get(uriPrefix + '/' + notFoundID)
         .set('Authorization', 'JWT ' + jwt)
         .expect('Content-Type', /json/)
         .expect(function(res) {
