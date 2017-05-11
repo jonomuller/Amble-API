@@ -19,6 +19,6 @@ Returns a list of users matching the information provided (which could be a user
 - Code: 200 OK
 - Content: A success flag and an array containing the matched users
   
-### Errors
+### Errors
 
 - **400 Bad Request** – database validation error
