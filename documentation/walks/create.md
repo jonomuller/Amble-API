@@ -39,5 +39,5 @@ Stores a given list of coordinates in the database, with a reference to the user
 
 ### Errors
 
-- **401 Unauthorized** – no/invalid JWT provided
 - **400 Bad Request** – one or more parameters missing
+- **401 Unauthorized** – no/invalid JWT provided
