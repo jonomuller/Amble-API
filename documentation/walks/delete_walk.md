@@ -6,6 +6,8 @@
 DELETE /walks/:walkID
 ```
 
+### Description
+
 Deletes a walk from the database and its associated image on AWS S3, given a walk ID.
 
 ### Authorization
@@ -13,7 +15,7 @@ Deletes a walk from the database and its associated image on AWS S3, given a wal
 - A JWT for a registered user must be supplied in the _Authorization_ field of the request header.
 - The token must be supplied in the format `JWT 'token'`
 
-### Parameters
+### Parameters
 
 - **walkID**: ObjectID _(required)_
 

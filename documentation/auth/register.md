@@ -6,6 +6,8 @@
 POST /auth/register
 ```
 
+### Description
+
 Registers a new user, returning a JWT.
 
 ### Parameters

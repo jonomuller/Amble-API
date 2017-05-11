@@ -6,6 +6,8 @@
 POST /auth/login
 ```
 
+### Description
+
 Logs the user in if their credentials are valid, returning a [JSON Web Token](https://jwt.io) (JWT).
 
 ### Parameters

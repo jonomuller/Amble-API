@@ -6,6 +6,8 @@
 GET /walks/:walkID
 ```
 
+### Description
+
 Retrieves a walk from the database, given a walk ID.
 
 ### Authorization
@@ -13,7 +15,7 @@ Retrieves a walk from the database, given a walk ID.
 - A JWT for a registered user must be supplied in the _Authorization_ field of the request header.
 - The token must be supplied in the format `JWT 'token'`
 
-### Parameters
+### Parameters
 
 - **walkID**: ObjectID _(required)_
 

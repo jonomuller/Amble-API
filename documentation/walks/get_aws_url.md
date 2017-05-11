@@ -6,6 +6,8 @@
 GET /walks/create/upload
 ```
 
+### Description
+
 Returns a signed URL from AWS S3, used when creating a walk to upload an image of the map.
 
 ### Authorization
@@ -13,7 +15,7 @@ Returns a signed URL from AWS S3, used when creating a walk to upload an image o
 - A JWT for a registered user must be supplied in the _Authorization_ field of the request header.
 - The token must be supplied in the format `JWT 'token'`
 
-### Success response
+### Success response
 
 - Code: 200 OK
 - Content: A success flag and the signed URL
