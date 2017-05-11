@@ -15,19 +15,19 @@ https://ambleapp.herokuapp.com/api
 
 ### Authentication
 
-- POST /auth/login
-- POST /auth/register
+- **[<code>POST</code> /auth/login](https://github.com/jonomuller/Amble-API/blob/master/documentation/auth/login.md)**
+- **[<code>POST</code> /auth/register](https://github.com/jonomuller/Amble-API/blob/master/documentation/auth/register.md)**
 
 ### Walks
 
-- POST /walks/create
-- GET /walks/create/upload
-- GET /walks/:walkID
-- DELETE /walks/:walkID
+- **[<code>POST</code> /walks/create](https://github.com/jonomuller/Amble-API/blob/master/documentation/walks/create.md)**
+- **[<code>GET</code> /walks/create/upload](https://github.com/jonomuller/Amble-API/blob/master/documentation/walks/get_aws_url.md)**
+- **[<code>GET</code> /walks/:walkID](https://github.com/jonomuller/Amble-API/blob/master/documentation/walks/get_walk.md)**
+- **[<code>DELETE</code> /walks/:walkID](https://github.com/jonomuller/Amble-API/blob/master/documentation/walks/delete_walk.md)**
 
 ### Users
 
-- GET /users/:userID
-- GET /users/:userID/walks
-- GET /users/search/:userInfo
-- GET /users/:userID/register/:token
+- **[<code>GET</code> /users/:userID](https://github.com/jonomuller/Amble-API/blob/master/documentation/users/get_info.md)**
+- **[<code>GET</code> /users/:userID/walks](https://github.com/jonomuller/Amble-API/blob/master/documentation/users/get_walks.md)**
+- **[<code>GET</code> /users/search/:userInfo](https://github.com/jonomuller/Amble-API/blob/master/documentation/users/search.md)**
+- **[<code>GET</code> /users/:userID/register/:token](https://github.com/jonomuller/Amble-API/blob/master/documentation/users/register_token.md)**
