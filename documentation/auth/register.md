@@ -25,5 +25,4 @@ Registers a new user, returning a JWT.
   
 ### Errors
 
-- **400 Bad Request** – a user with that username already exists
-- **400 Bad Request** – a user with that email address aleady exists
+- **400 Bad Request** – a user with that username or email address already exists
