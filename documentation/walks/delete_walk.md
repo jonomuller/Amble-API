@@ -26,6 +26,6 @@ Deletes a walk from the database and its associated image on AWS S3, given a wal
 
 ### Errors
 
-- **401 Unauthorized** – no/invalid JWT provided
 - **400 Bad Request** – walkID not of type ObjectID
+- **401 Unauthorized** – no/invalid JWT provided
 - **404 Not Found** – a walk with ID _walkID_ could not be found in the database
