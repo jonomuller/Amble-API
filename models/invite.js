@@ -4,10 +4,12 @@ const mongoose = require('mongoose'),
 const InviteSchema = new Schema({
   from: {
     type: Schema.Types.ObjectId,
+    ref: 'User',
     required: true
   },
   to: {
     type: Schema.Types.ObjectId,
+    ref: 'User',
     required: true
   },
   date: {

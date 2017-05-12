@@ -151,3 +151,16 @@ module.exports.invite = function(req, res, next) {
     });
   });
 };
+
+module.exports.getSentInvites = function(req, res, next) {
+  Invite.find({from: req.user._id})
+        .populate('to')
+        .exec(function(error, invites) {
+          if (error) return helper.mongooseValidationError(error, res);
+
+          res.status(200).json({
+            success: true,
+            invites: invites
+          })
+  });
+};

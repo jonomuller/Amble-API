@@ -288,8 +288,23 @@ describe('POST /invite/:userID', function() {
         .expect(404, done);
     });
   });
+});
+
+describe('GET /invites/sent', function() {
+  it('should get sent invites for valid user', function(done) {
+    request(app)
+      .get(uriPrefix + '/invites/sent')
+      .set('Authorization', 'JWT ' + jwt)
+      .expect('Content-Type', /json/)
+      .expect(function(res) {
+        res.body.success.should.be.equal(true);
+        res.body.invites.should.have.length(1);
+      })
+      .expect(200, done);
+  });
 
   after(function(done) {
+    helper.clearDB('invites');
     helper.clearDB('users', done);
   });
 });
