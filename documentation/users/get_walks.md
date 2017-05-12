@@ -1,6 +1,6 @@
 # Users
 
-## Retrieves user's walks
+## Retrieve user's walks
 
 ```
 GET /users/:userID/walks
