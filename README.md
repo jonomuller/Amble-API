@@ -31,3 +31,4 @@ https://ambleapp.herokuapp.com/api
 - **[<code>GET</code> /users/:userID/walks](https://github.com/jonomuller/Amble-API/blob/master/documentation/users/get_walks.md)**
 - **[<code>GET</code> /users/search/:userInfo](https://github.com/jonomuller/Amble-API/blob/master/documentation/users/search.md)**
 - **[<code>GET</code> /users/:userID/register/:token](https://github.com/jonomuller/Amble-API/blob/master/documentation/users/register_token.md)**
+- **[<code>POST</code> /users/invite/:userID](https://github.com/jonomuller/Amble-API/blob/master/documentation/users/invite.md)**
