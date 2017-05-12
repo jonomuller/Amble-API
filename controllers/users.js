@@ -91,7 +91,7 @@ module.exports.search = function(req, res, next) {
 };
 
 module.exports.registerToken = function(req, res, next) {
-  User.findByIdAndUpdate(req.params.userID, {deviceToken: req.params.token}, {new: true}, function(error, user) {
+  User.findByIdAndUpdate(req.user._id, {deviceToken: req.params.token}, {new: true}, function(error, user) {
     if (error) return helper.mongooseValidationError(error, res);
 
     if (!user) return res.status(404).json({
