@@ -234,7 +234,7 @@ describe('GET /:userID/register/:token', function() {
   describe('Valid token registration', function() {
     it('should succeed with valid user ID and valid token', function(done) {
       request(app)
-        .get(uriPrefix + '/' + userID + '/register/' + deviceToken)
+        .get(uriPrefix + '/register/' + deviceToken)
         .set('Authorization', 'JWT ' + jwt)
         .expect('Content-Type', /json/)
         .expect(function(res) {
@@ -242,33 +242,6 @@ describe('GET /:userID/register/:token', function() {
           res.body.user.deviceToken.should.be.equal(deviceToken);
         })
         .expect(200, done);
-    });
-  });
-
-  describe('Invalid device registration', function() {
-    it('should return error with invalid user ID', function(done) {
-      request(app)
-        .get(uriPrefix + '/' + invalidID + '/register/' + deviceToken)
-        .set('Authorization', 'JWT ' + jwt)
-        .expect('Content-Type', /json/)
-        .expect(function(res) {
-          res.body.success.should.be.equal(false);
-          res.body.error.should.be.equal('Cast to ObjectId failed for value "' 
-            + invalidID + '" at path "_id" for model "User"');
-        })
-        .expect(400, done);
-    });
-
-    it('should return error with user ID not found', function(done) {
-      request(app)
-        .get(uriPrefix + '/' + notFoundID + '/register/' + deviceToken)
-        .set('Authorization', 'JWT ' + jwt)
-        .expect('Content-Type', /json/)
-        .expect(function(res) {
-          res.body.success.should.be.equal(false);
-          res.body.error.should.be.equal('User does not exist.');
-        })
-        .expect(404, done);
     });
   });
 });
@@ -279,7 +252,7 @@ describe('POST /invite/:userID', function() {
       request(app)
         .post(uriPrefix + '/invite/' + userID)
         .set('Authorization', 'JWT ' + jwt)
-        .send({from: notFoundID, date: '01/01/70'})
+        .send({date: '01/01/70'})
         .expect('Content-Type', /json/)
         .expect(function(res) {
           res.body.success.should.be.equal(true);

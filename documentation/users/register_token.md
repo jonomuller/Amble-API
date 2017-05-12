@@ -3,7 +3,7 @@
 ## Register iOS device token
 
 ```
-GET /users/:userID/register/:token
+GET /users/register/:token
 ```
 
 ### Description
@@ -12,7 +12,6 @@ Registers or updates a device token for a user, given their user ID.
 
 ### Parameters
 
-- **userID**: ObjectID _(required)_
 - **token**: String _(required)_
 
 ### Success response
