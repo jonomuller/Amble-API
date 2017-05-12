@@ -121,7 +121,7 @@ module.exports.invite = function(req, res, next) {
                       })
 
     var invite = new Invite({
-      from: req.body.from,
+      from: req.user._id,
       to: userID,
       date: date
     });
