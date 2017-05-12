@@ -7,9 +7,9 @@ const Walk = require('../models/walk'),
 
 var apnProvider = new apn.Provider({  
      token: {
-        key: config.apnsPrivateKey, // Path to the key p8 file
-        keyId: '27U39CG6UZ', // The Key ID of the p8 file (available at https://developer.apple.com/account/ios/certificate/key)
-        teamId: 'QJQGH9NF7F', // The Team ID of your Apple Developer Account (available at https://developer.apple.com/account/#/membership/)
+        key: '-----BEGIN PRIVATE KEY-----\n' + config.apnsPrivateKey + '\n-----END PRIVATE KEY-----',
+        keyId: '27U39CG6UZ',
+        teamId: 'QJQGH9NF7F',
     },
     production: false // Set to true if sending a notification to a production iOS app
 });
