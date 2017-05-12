@@ -18,6 +18,7 @@ Sends an invite to a user given their ID and sends a push notification to their 
 ### Parameters
 
 - **userID**: ObjectID _(required)_
+- **date**: String _(required)_
 
 ### Success response
 
