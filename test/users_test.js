@@ -271,6 +271,50 @@ describe('GET /:userID/register/:token', function() {
         .expect(404, done);
     });
   });
+});
+
+describe('POST /invite/:userID', function() {
+  describe('Valid invitiation', function() {
+    it('should succeed with valid user ID', function(done) {
+      request(app)
+        .post(uriPrefix + '/invite/' + userID)
+        .set('Authorization', 'JWT ' + jwt)
+        .send({from: notFoundID, date: '01/01/70'})
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(true);
+          res.body.invite.to.should.be.equal(userID);
+        })
+        .expect(200, done);
+    });
+  });
+
+  describe('Invalid invitiation', function() {
+    it('should fail with invalid user ID', function(done) {
+      request(app)
+        .post(uriPrefix + '/invite/' + invalidID)
+        .set('Authorization', 'JWT ' + jwt)
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(false);
+          res.body.error.should.be.equal('Cast to ObjectId failed for value "' 
+            + invalidID + '" at path "_id" for model "User"');
+        })
+        .expect(400, done);
+    });
+
+    it('should fail with user ID not found', function(done) {
+      request(app)
+        .post(uriPrefix + '/invite/' + notFoundID)
+        .set('Authorization', 'JWT ' + jwt)
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(false);
+          res.body.error.should.be.equal('User does not exist.');
+        })
+        .expect(404, done);
+    });
+  });
 
   after(function(done) {
     helper.clearDB('users', done);
