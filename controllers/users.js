@@ -11,7 +11,7 @@ var apnProvider = new apn.Provider({
         keyId: '27U39CG6UZ',
         teamId: 'QJQGH9NF7F',
     },
-    production: false // Set to true if sending a notification to a production iOS app
+    production: false
 });
 
 module.exports.getInfo = function(req, res, next) {
@@ -109,8 +109,7 @@ module.exports.registerToken = function(req, res, next) {
 module.exports.invite = function(req, res, next) {
   var date;
   if (req.body.date) date = new Date(req.body.date);
-
-console.log(config.apnsPrivateKey);
+  
   var userID = req.params.userID;
 
   User.findById(userID, function(error, user) {
@@ -132,7 +131,7 @@ console.log(config.apnsPrivateKey);
 
       if (user.deviceToken) {
         var notification = new apn.Notification();
-        notification.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
+        notification.expiry = Math.floor(Date.now() / 1000) + 3600;
         notification.badge = 1;
         notification.sound = 'ping.aiff';
         notification.alert = user.name.firstName + ' ' + user.name.lastName + ' invited you to go on a walk';
