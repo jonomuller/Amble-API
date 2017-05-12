@@ -1,14 +1,14 @@
 # Users
 
-## Retrieve sent invites
+## Retrieve received invites
 
 ```
-GET /users/invites/sent
+GET /users/invites/received
 ```
 
 ### Description
 
-Retrieves a list of the user's sent invitations.
+Retrieves a list of the user's received invitations.
 
 ### Authorization
 
@@ -18,7 +18,7 @@ Retrieves a list of the user's sent invitations.
 ### Success response
 
 - Code: 200 OK
-- Content: A success flag and an array containing the user's sent invites, along with details about the recipients
+- Content: A success flag and an array containing the user's received invites, along with details about the senders
 
 ### Errors
 

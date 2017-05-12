@@ -302,6 +302,20 @@ describe('GET /invites/sent', function() {
       })
       .expect(200, done);
   });
+});
+
+describe('GET /invites/received', function() {
+  it('should get received invites for valid user', function(done) {
+    request(app)
+      .get(uriPrefix + '/invites/received')
+      .set('Authorization', 'JWT ' + jwt)
+      .expect('Content-Type', /json/)
+      .expect(function(res) {
+        res.body.success.should.be.equal(true);
+        res.body.invites.should.have.length(1);
+      })
+      .expect(200, done);
+  });
 
   after(function(done) {
     helper.clearDB('invites');

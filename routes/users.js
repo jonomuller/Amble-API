@@ -9,5 +9,6 @@ usersRouter.get('/search/:userInfo', users.search);
 usersRouter.get('/register/:token', helper.jwtAuth, users.registerToken);
 usersRouter.post('/invite/:userID', helper.jwtAuth, users.invite);
 usersRouter.get('/invites/sent', helper.jwtAuth, users.getSentInvites);
+usersRouter.get('/invites/received', helper.jwtAuth, users.getReceivedInvites);
 
 module.exports = usersRouter;
