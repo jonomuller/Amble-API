@@ -112,6 +112,13 @@ module.exports.invite = function(req, res, next) {
   
   var userID = req.params.userID;
 
+  if (req.user._id.equals(userID)) {
+    return res.status(400).json({
+      success: false,
+      error: 'An invite cannot be sent to yourself.'
+    })
+  }
+
   User.findById(userID, function(error, user) {
     if (error) return helper.mongooseValidationError(error, res);
 

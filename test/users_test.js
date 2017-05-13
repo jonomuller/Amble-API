@@ -5,6 +5,7 @@ const request = require('supertest'),
       helper = require('./helper');
 
 var jwt,
+    anotherUserJWT,
     userID,
     testWalk = {
       id: '0001',
@@ -247,22 +248,50 @@ describe('GET /:userID/register/:token', function() {
 });
 
 describe('POST /invite/:userID', function() {
+
+  var anotherUser;
+
+  before(function(done) {
+    request(app)
+      .post('/api/auth/register')
+      .send({username: '123', email: '123@gmail.com', 
+        password: '12345', firstName: 'Hello', lastName: 'World'})
+      .end(function(err, res) {
+        if (err) return done(err);
+        anotherUser = res.body.user;
+        anotherUserJWT = res.body.jwt;
+        done();
+    });
+  });
+
   describe('Valid invitiation', function() {
     it('should succeed with valid user ID', function(done) {
       request(app)
-        .post(uriPrefix + '/invite/' + userID)
+        .post(uriPrefix + '/invite/' + anotherUser._id)
         .set('Authorization', 'JWT ' + jwt)
         .send({date: '01/01/70'})
         .expect('Content-Type', /json/)
         .expect(function(res) {
           res.body.success.should.be.equal(true);
-          res.body.invite.to.should.be.equal(userID);
+          res.body.invite.to.should.be.equal(anotherUser._id);
         })
         .expect(200, done);
     });
   });
 
   describe('Invalid invitiation', function() {
+    it('should fail when inviting yourself', function(done) {
+      request(app)
+        .post(uriPrefix + '/invite/' + userID)
+        .set('Authorization', 'JWT ' + jwt)
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(false);
+          res.body.error.should.be.equal('An invite cannot be sent to yourself.');
+        })
+        .expect(400, done);
+    });
+
     it('should fail with invalid user ID', function(done) {
       request(app)
         .post(uriPrefix + '/invite/' + invalidID)
@@ -308,7 +337,7 @@ describe('GET /invites/received', function() {
   it('should get received invites for valid user', function(done) {
     request(app)
       .get(uriPrefix + '/invites/received')
-      .set('Authorization', 'JWT ' + jwt)
+      .set('Authorization', 'JWT ' + anotherUserJWT)
       .expect('Content-Type', /json/)
       .expect(function(res) {
         res.body.success.should.be.equal(true);
