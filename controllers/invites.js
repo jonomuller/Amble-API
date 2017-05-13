@@ -10,18 +10,20 @@ module.exports.acceptInvite = function(req, res, next) {
       error: 'Invite does not exist.'
     })
 
-    if (invite.to != req.user._id) return res.status(401).json({
+    if (!invite.to.equals(req.user._id)) return res.status(401).json({
       success: false,
       error: 'The invite was not sent to you.'
     })
 
-    Invite.findByIdAndUpdate(req.params.inviteID, {accepted: true}, {new: true}, function(error, invite) {
-      if (error) return helper.mongooseValidationError(error, res);
+    invite.accepted = true;
+
+    invite.save(function(error) {
+      if (error) return helper.mongooseValidationError(res)
 
       res.status(200).json({
         success: true,
         invite: invite
       })
     });
-  })
+  });
 };
