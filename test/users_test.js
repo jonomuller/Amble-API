@@ -280,6 +280,18 @@ describe('POST /invite/:userID', function() {
   });
 
   describe('Invalid invitiation', function() {
+    it('should fail when inviting yourself', function(done) {
+      request(app)
+        .post(uriPrefix + '/invite/' + userID)
+        .set('Authorization', 'JWT ' + jwt)
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(false);
+          res.body.error.should.be.equal('An invite cannot be sent to yourself.');
+        })
+        .expect(400, done);
+    });
+
     it('should fail with invalid user ID', function(done) {
       request(app)
         .post(uriPrefix + '/invite/' + invalidID)
