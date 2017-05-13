@@ -28,6 +28,7 @@ const UserSchema = new Schema({
     type: String,
     required: true
   },
+  deviceToken: String,
   score: {
     type: Number,
     default: 0,
