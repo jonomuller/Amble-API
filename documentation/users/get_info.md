@@ -1,6 +1,6 @@
 # Users
 
-## Retrieves user's info
+## Retrieve user's info
 
 ```
 GET /users/:userID
