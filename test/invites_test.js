@@ -8,14 +8,13 @@ var username = 'bob1234',
     email = 'bob@bobson.com',
     password = 'amble4lyfe',
     firstName = 'Bob',
-    lastName = 'Bobson'
+    lastName = 'Bobson';
+
+var jwt, anotherUser, anotherUserJWT, inviteID;
 
 describe('GET /:inviteID/accept', function() {
 
-  var anotherUser, anotherUserJWT, inviteID;
-
   before(function(done) {
-    var jwt;
 
     request(app)
       .post('/api/auth/register')
@@ -56,8 +55,80 @@ describe('GET /:inviteID/accept', function() {
           res.body.invite.accepted.should.be.equal(true);
         })
         .expect(200, done);
-    })
-  })
+    });
+  });
+
+  describe('Invalid invite accept', function() {
+
+    it('should fail with invalid invite ID', function(done) {
+      var invalidID = 'invalid_id';
+      request(app)
+        .get(uriPrefix + '/' + invalidID + '/accept')
+        .set('Authorization', 'JWT ' + anotherUserJWT)
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(false);
+          res.body.error.should.be.equal('Cast to ObjectId failed for value "' 
+            + invalidID + '" at path "_id" for model "Invite"');
+        })
+        .expect(400, done);
+    });
+
+    it('should fail with ID not found', function(done) {
+      var notFoundID = '000000000000';
+      request(app)
+        .get(uriPrefix + '/' + notFoundID + '/accept')
+        .set('Authorization', 'JWT ' + anotherUserJWT)
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(false);
+          res.body.error.should.be.equal('Invite does not exist.');
+        })
+        .expect(404, done);
+    });
+
+    it('should fail if invite is not sent to user', function(done) {
+      request(app)
+        .get(uriPrefix + '/' + inviteID + '/accept')
+        .set('Authorization', 'JWT ' + jwt)
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(false);
+          res.body.error.should.be.equal('The invite was not sent to you.');
+        })
+        .expect(401, done);
+    });
+  });
+});
+
+describe('GET /:inviteID/decline', function() {
+
+  describe('Invalid invite decline', function() {
+    it('should fail if invite is not sent to user', function(done) {
+      request(app)
+        .get(uriPrefix + '/' + inviteID + '/decline')
+        .set('Authorization', 'JWT ' + jwt)
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(false);
+          res.body.error.should.be.equal('The invite was not sent to you.');
+        })
+        .expect(401, done);
+    });
+  });
+
+  describe('Valid invite decline', function() {
+    it('should decline valid invite', function(done) {
+      request(app)
+        .get(uriPrefix + '/' + inviteID + '/decline')
+        .set('Authorization', 'JWT ' + anotherUserJWT)
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(true);
+        })
+        .expect(200, done);
+    });
+  });
 
   after(function(done) {
     helper.clearDB('users');

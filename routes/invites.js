@@ -4,5 +4,6 @@ const express = require('express'),
       helper = require('./helper');
 
 invitesRouter.get('/:inviteID/accept', helper.jwtAuth, invites.acceptInvite);
+invitesRouter.get('/:inviteID/decline', helper.jwtAuth, invites.declineInvite);
 
 module.exports = invitesRouter;
