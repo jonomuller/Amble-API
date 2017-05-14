@@ -14,6 +14,10 @@ const WalkSchema = new Schema({
     ref: 'User',
     required: true
   },
+  members: [{
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  }],
   geometry: {
     type: Schema.Types.MultiPoint,
     required: true

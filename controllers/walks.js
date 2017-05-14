@@ -32,8 +32,9 @@ function isValidAchievement(achievement) {
 }
 
 module.exports.create = function(req, res, next) {
-  var coordinates;
+  var coordinates, members;
   if (req.body.coordinates) coordinates = JSON.parse(req.body.coordinates);
+  if (req.body.members) members = JSON.parse(req.body.members);
 
   var achievementSchemas = [];
   var score = 0;
@@ -66,6 +67,7 @@ module.exports.create = function(req, res, next) {
   var walk = new Walk({
     name: req.body.name,
     owner: req.body.owner,
+    members: members,
     geometry: {
       type: 'MultiPoint',
       coordinates: coordinates
