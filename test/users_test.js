@@ -10,7 +10,6 @@ var jwt,
     testWalk = {
       id: '0001',
       name: 'Test Walk',
-      owner: '0001',
       coordinates: '[[1.02, 3.204], [34543.234, 3432], [43.4, 76]]',
       image: 'image_url',
       time: 234,
@@ -38,7 +37,6 @@ describe('GET /:userID/walks', function() {
         if (err) return done(err);
         jwt = res.body.jwt;
         userID = res.body.user._id;
-        testWalk.owner = userID;
 
         request(app)
           .post('/api/walks/create')

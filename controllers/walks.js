@@ -32,9 +32,32 @@ function isValidAchievement(achievement) {
 }
 
 module.exports.create = function(req, res, next) {
+  var userID = req.user._id;
   var coordinates, members;
   if (req.body.coordinates) coordinates = JSON.parse(req.body.coordinates);
-  if (req.body.members) members = JSON.parse(req.body.members);
+
+  // Check all members are valid users
+  if (req.body.members) {
+    members = JSON.parse(req.body.members);
+
+    for (let key in members) {
+      let member = members[key];
+
+      if (userID.equals(member)) return res.status(400).json({
+        success: false,
+        error: 'One of the members cannot be your own user ID.'
+      })
+
+      User.findById(member, function(error, user) {
+        if (error) return helper.mongooseValidationError(error, res);
+
+        if (!user) return res.status(404).json({
+          success: false,
+          error: 'Member `' + member + '` does not exist.'
+        })
+      });
+    }
+  }
 
   var achievementSchemas = [];
   var score = 0;
@@ -66,7 +89,7 @@ module.exports.create = function(req, res, next) {
 
   var walk = new Walk({
     name: req.body.name,
-    owner: req.body.owner,
+    owner: userID,
     members: members,
     geometry: {
       type: 'MultiPoint',
