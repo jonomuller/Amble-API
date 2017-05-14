@@ -33,7 +33,7 @@ module.exports.getInfo = function(req, res, next) {
 module.exports.getWalks = function(req, res, next) {
   var id = req.params.userID;
 
-  Walk.find({owner: id}, function(error, walks) {
+  Walk.find({$or:[{owner: id}, {members: id}]}, function(error, walks) {
     if (error) return helper.mongooseValidationError(error, res);
 
     var walkDetails = [];
@@ -107,56 +107,66 @@ module.exports.registerToken = function(req, res, next) {
 };
 
 module.exports.invite = function(req, res, next) {
-  var date;
+  var date, users;
   if (req.body.date) date = new Date(req.body.date);
   
-  var userID = req.params.userID;
+  var userID = req.user._id;
 
-  if (req.user._id.equals(userID)) {
-    return res.status(400).json({
-      success: false,
-      error: 'An invite cannot be sent to yourself.'
-    })
-  }
+  if (req.body.users) {
+    users = JSON.parse(req.body.users);
 
-  User.findById(userID, function(error, user) {
-    if (error) return helper.mongooseValidationError(error, res);
+    for (let key in users) {
+      var user = users[key]
 
-    if (!user) return res.status(404).json({
-                        success: false,
-                        error: 'User does not exist.'
-                      })
-
-    var invite = new Invite({
-      from: req.user._id,
-      to: userID,
-      date: date
-    });
-
-    invite.save(function(error) {
-      if (error) return helper.mongooseValidationError(error, res);
-
-      if (user.deviceToken) {
-        var notification = new apn.Notification();
-        notification.expiry = Math.floor(Date.now() / 1000) + 3600;
-        notification.badge = 1;
-        notification.sound = 'ping.aiff';
-        notification.alert = user.name.firstName + ' ' + user.name.lastName + ' invited you to go on a walk';
-        notification.topic = 'uk.ac.imperial.Amble';
-
-        apnProvider.send(notification, user.deviceToken).then(function(result) {  
-            console.log(result);
-        });
-      } else {
-        console.log('No device token');
+      if (userID.equals(user)) {
+        return res.status(400).json({
+          success: false,
+          error: 'An invite cannot be sent to yourself.'
+        })
       }
 
-      res.status(200).json({
-        success: true,
-        invite: invite
-      })
-    });
-  });
+      User.findById(user, function(error, user) {
+        if (error) return helper.mongooseValidationError(error, res);
+
+        if (!user) return res.status(404).json({
+                            success: false,
+                            error: 'User does not exist.'
+                          })
+
+        if (key == users.length - 1) {
+          var invite = new Invite({
+            from: userID,
+            to: users,
+            date: date
+          });
+
+          invite.save(function(error) {
+            if (error) return helper.mongooseValidationError(error, res);
+
+            if (user.deviceToken) {
+              var notification = new apn.Notification();
+              notification.expiry = Math.floor(Date.now() / 1000) + 3600;
+              notification.badge = 1;
+              notification.sound = 'ping.aiff';
+              notification.alert = user.name.firstName + ' ' + user.name.lastName + ' invited you to go on a walk';
+              notification.topic = 'uk.ac.imperial.Amble';
+
+              apnProvider.send(notification, user.deviceToken).then(function(result) {  
+                  console.log(result);
+              });
+            } else {
+              console.log('No device token');
+            }
+
+            res.status(200).json({
+              success: true,
+              invite: invite
+            })
+          });
+        }
+      });
+    }
+  }
 };
 
 module.exports.getSentInvites = function(req, res, next) {

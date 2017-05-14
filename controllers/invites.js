@@ -10,11 +10,6 @@ module.exports.acceptInvite = function(req, res, next) {
       error: 'Invite does not exist.'
     })
 
-    if (!invite.to.equals(req.user._id)) return res.status(401).json({
-      success: false,
-      error: 'The invite was not sent to you.'
-    })
-
     invite.accepted = true;
 
     invite.save(function(error) {
@@ -35,11 +30,6 @@ module.exports.declineInvite = function(req, res, next) {
     if (!invite) return res.status(404).json({
       success: false,
       error: 'Invite does not exist.'
-    })
-
-    if (!invite.to.equals(req.user._id)) return res.status(401).json({
-      success: false,
-      error: 'The invite was not sent to you.'
     })
 
     invite.remove(function(error) {

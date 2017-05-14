@@ -41,7 +41,7 @@ module.exports.create = function(req, res, next) {
     members = JSON.parse(req.body.members);
 
     for (let key in members) {
-      let member = members[key];
+      var member = members[key];
 
       if (userID.equals(member)) return res.status(400).json({
         success: false,
@@ -55,6 +55,10 @@ module.exports.create = function(req, res, next) {
           success: false,
           error: 'Member `' + member + '` does not exist.'
         })
+
+        if (key == members.length - 1) {
+          
+        }
       });
     }
   }
