@@ -7,11 +7,11 @@ const InviteSchema = new Schema({
     ref: 'User',
     required: true
   },
-  to: {
+  to: [{
     type: Schema.Types.ObjectId,
     ref: 'User',
     required: true
-  },
+  }],
   date: {
     type: Date,
     required: true

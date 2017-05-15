@@ -8,7 +8,6 @@ var jwt,
     testWalk = {
       id: '0001',
       name: 'Test Walk',
-      owner: '0001',
       coordinates: '[[1.02, 3.204], [34543.234, 3432], [43.4, 76]]',
       image: 'image_url',
       achievements: '[{"name": "DISTANCE", "value": 1234}, {"name": "DAY_STREAK", "value": 200}]',
@@ -27,7 +26,6 @@ describe('POST /create', function() {
       .end(function(err, res) {
         if (err) return done(err);
         jwt = res.body.jwt;
-        testWalk.owner = res.body.user._id
         done();
       });
   });
@@ -98,23 +96,6 @@ describe('POST /create', function() {
           testWalk.achievements = null;
         })
         .expect(400, done);
-    })
-
-    it('should fail with invalid user ID', function(done) {
-      var notFoundID = '000000000000';
-      validID = testWalk.owner;
-      testWalk.owner = notFoundID;
-      request(app)
-        .post(uriPrefix + '/create')
-        .set('Authorization', 'JWT ' + jwt)
-        .send(testWalk)
-        .expect('Content-Type', /json/)
-        .expect(function(res) {
-          res.body.success.should.be.equal(false);
-          res.body.error.should.be.equal('The owner specified for the walk is not a valid user.');
-          testWalk.owner = validID;
-        })
-        .expect(404, done);
     })
   });
 });

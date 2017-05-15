@@ -32,9 +32,9 @@ describe('GET /:inviteID/accept', function() {
             anotherUser = res2.body.user;
             anotherUserJWT = res2.body.jwt;
             request(app)
-              .post('/api/users/invite/' + anotherUser._id)
+              .post('/api/users/invite')
               .set('Authorization', 'JWT ' + jwt)
-              .send({date: '01/01/70'})
+              .send({users: '["' + anotherUser._id + '"]', date: '01/01/70'})
               .end(function(err3, res3) {
                 if (err3) return done(err3);
                 inviteID = res3.body.invite._id;
@@ -86,36 +86,10 @@ describe('GET /:inviteID/accept', function() {
         })
         .expect(404, done);
     });
-
-    it('should fail if invite is not sent to user', function(done) {
-      request(app)
-        .get(uriPrefix + '/' + inviteID + '/accept')
-        .set('Authorization', 'JWT ' + jwt)
-        .expect('Content-Type', /json/)
-        .expect(function(res) {
-          res.body.success.should.be.equal(false);
-          res.body.error.should.be.equal('The invite was not sent to you.');
-        })
-        .expect(401, done);
-    });
   });
 });
 
 describe('GET /:inviteID/decline', function() {
-
-  describe('Invalid invite decline', function() {
-    it('should fail if invite is not sent to user', function(done) {
-      request(app)
-        .get(uriPrefix + '/' + inviteID + '/decline')
-        .set('Authorization', 'JWT ' + jwt)
-        .expect('Content-Type', /json/)
-        .expect(function(res) {
-          res.body.success.should.be.equal(false);
-          res.body.error.should.be.equal('The invite was not sent to you.');
-        })
-        .expect(401, done);
-    });
-  });
 
   describe('Valid invite decline', function() {
     it('should decline valid invite', function(done) {

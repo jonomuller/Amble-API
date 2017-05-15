@@ -17,6 +17,7 @@ Registers a new user, returning a JWT.
 - **password**: String _(required)_
 - **firstName**: String _(required)_
 - **lastName**: String _(required)_
+- **deviceToken**: String
   
 ### Success response
 

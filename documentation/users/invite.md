@@ -3,12 +3,12 @@
 ## Invite a user to go on a walk
 
 ```
-POST /users/invite/:userID
+POST /users/invite
 ```
 
 ### Description
 
-Sends an invite to a user given their ID and sends a push notification to their iOS device (if available).
+Sends an invite to users given their IDs and sends a push notification to their iOS device (if available).
 
 ### Authorization
 
@@ -17,7 +17,7 @@ Sends an invite to a user given their ID and sends a push notification to their 
 
 ### Parameters
 
-- **userID**: ObjectID _(required)_
+- **users**: [ObjectID] _(required)_
 - **date**: String _(required)_
 
 ### Success response
