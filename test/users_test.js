@@ -10,7 +10,6 @@ var jwt,
     testWalk = {
       id: '0001',
       name: 'Test Walk',
-      owner: '0001',
       coordinates: '[[1.02, 3.204], [34543.234, 3432], [43.4, 76]]',
       image: 'image_url',
       time: 234,
@@ -38,7 +37,6 @@ describe('GET /:userID/walks', function() {
         if (err) return done(err);
         jwt = res.body.jwt;
         userID = res.body.user._id;
-        testWalk.owner = userID;
 
         request(app)
           .post('/api/walks/create')
@@ -85,7 +83,7 @@ describe('GET /:userID/walks', function() {
         .expect(function(res) {
           res.body.success.should.be.equal(false);
           res.body.error.should.be.equal('Cast to ObjectId failed for value "' 
-            + invalidID + '" at path "owner" for model "Walk"')
+            + invalidID + '" at path "members" for model "Walk"')
         })
         .expect(400, done);
     });
@@ -247,7 +245,7 @@ describe('GET /:userID/register/:token', function() {
   });
 });
 
-describe('POST /invite/:userID', function() {
+describe('POST /invite', function() {
 
   var anotherUser;
 
@@ -267,13 +265,13 @@ describe('POST /invite/:userID', function() {
   describe('Valid invitiation', function() {
     it('should succeed with valid user ID', function(done) {
       request(app)
-        .post(uriPrefix + '/invite/' + anotherUser._id)
+        .post(uriPrefix + '/invite')
         .set('Authorization', 'JWT ' + jwt)
-        .send({date: '01/01/70'})
+        .send({users: '["' + anotherUser._id + '"]', date: '01/01/70'})
         .expect('Content-Type', /json/)
         .expect(function(res) {
           res.body.success.should.be.equal(true);
-          res.body.invite.to.should.be.equal(anotherUser._id);
+          res.body.invite.to[0].should.be.equal(anotherUser._id);
         })
         .expect(200, done);
     });
@@ -282,8 +280,9 @@ describe('POST /invite/:userID', function() {
   describe('Invalid invitiation', function() {
     it('should fail when inviting yourself', function(done) {
       request(app)
-        .post(uriPrefix + '/invite/' + userID)
+        .post(uriPrefix + '/invite')
         .set('Authorization', 'JWT ' + jwt)
+        .send({users: '["' + userID + '"]', date: '01/01/70'})
         .expect('Content-Type', /json/)
         .expect(function(res) {
           res.body.success.should.be.equal(false);
@@ -294,8 +293,9 @@ describe('POST /invite/:userID', function() {
 
     it('should fail with invalid user ID', function(done) {
       request(app)
-        .post(uriPrefix + '/invite/' + invalidID)
+        .post(uriPrefix + '/invite')
         .set('Authorization', 'JWT ' + jwt)
+        .send({users: '["' + invalidID + '"]', date: '01/01/70'})
         .expect('Content-Type', /json/)
         .expect(function(res) {
           res.body.success.should.be.equal(false);
@@ -307,8 +307,9 @@ describe('POST /invite/:userID', function() {
 
     it('should fail with user ID not found', function(done) {
       request(app)
-        .post(uriPrefix + '/invite/' + notFoundID)
+        .post(uriPrefix + '/invite')
         .set('Authorization', 'JWT ' + jwt)
+        .send({users: '["' + notFoundID + '"]', date: '01/01/70'})
         .expect('Content-Type', /json/)
         .expect(function(res) {
           res.body.success.should.be.equal(false);
