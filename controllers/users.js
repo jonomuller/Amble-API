@@ -148,7 +148,7 @@ module.exports.invite = function(req, res, next) {
               notification.expiry = Math.floor(Date.now() / 1000) + 3600;
               notification.badge = 1;
               notification.sound = 'ping.aiff';
-              notification.alert = user.name.firstName + ' ' + user.name.lastName + ' invited you to go on a walk';
+              notification.alert = req.user.name.firstName + ' ' + req.user.name.lastName + ' invited you to go on a walk';
               notification.topic = 'uk.ac.imperial.Amble';
 
               apnProvider.send(notification, user.deviceToken).then(function(result) {  
