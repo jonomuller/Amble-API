@@ -14,6 +14,7 @@ Logs the user in if their credentials are valid, returning a [JSON Web Token](ht
 
 - **username**: String _(required)_
 - **password**: String _(required)_
+- **deviceToken**: String
   
 ### Success response
 
