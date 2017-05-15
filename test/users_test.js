@@ -299,7 +299,8 @@ describe('POST /invite', function() {
         .expect('Content-Type', /json/)
         .expect(function(res) {
           res.body.success.should.be.equal(false);
-          res.body.error.should.be.equal('Cast to ObjectId failed for value "invalid_id" at path "_id" for model "User"');
+          res.body.error.should.be.equal('Cast to ObjectId failed for value "' 
+            + invalidID + '" at path "_id" for model "User"');
         })
         .expect(400, done);
     });
