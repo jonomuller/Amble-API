@@ -28,7 +28,12 @@ module.exports.login = function(req, res, next) {
                         error: info.message
                       })
 
-    returnWithJWT(user, 200, res);
+    user.deviceToken = req.body.deviceToken;
+
+    user.save(function(error) {
+      if (error) return helper.mongooseValidationError(error, res);
+      returnWithJWT(user, 200, res);
+    });
   })(req, res, next);
 };
 
