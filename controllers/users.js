@@ -149,15 +149,19 @@ module.exports.invite = function(req, res, next) {
             if (error) return helper.mongooseValidationError(error, res);
 
             if (user.deviceToken) {
-              var notification = new apn.Notification();
-              notification.expiry = Math.floor(Date.now() / 1000) + 3600;
-              notification.badge = 1;
-              notification.sound = 'ping.aiff';
-              notification.alert = req.user.name.firstName + ' ' + req.user.name.lastName + ' invited you to go on a walk';
-              notification.topic = 'uk.ac.imperial.Amble';
+              Invite.count({'to.user': userID}, function(error, inviteCount) {
+                if (error) return helper.mongooseValidationError(error, res);
 
-              apnProvider.send(notification, user.deviceToken).then(function(result) {  
-                  console.log(result);
+                var notification = new apn.Notification();
+                notification.expiry = Math.floor(Date.now() / 1000) + 3600;
+                notification.badge = inviteCount;
+                notification.sound = 'ping.aiff';
+                notification.alert = req.user.name.firstName + ' ' + req.user.name.lastName + ' invited you to go on a walk.';
+                notification.topic = 'uk.ac.imperial.Amble';
+
+                apnProvider.send(notification, user.deviceToken).then(function(result) {  
+                    console.log(result);
+                });
               });
             } else {
               console.log('No device token');
