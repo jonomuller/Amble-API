@@ -43,7 +43,9 @@ describe('GET /:inviteID/accept', function() {
         .set('Authorization', 'JWT ' + anotherUserJWT)
         .expect('Content-Type', /json/)
         .expect(function(res) {
+          // console.log(res);
           res.body.success.should.be.equal(true);
+          res.body.invite.accepted.should.be.equal(true);
         })
         .expect(200, done);
     });

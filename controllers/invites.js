@@ -7,9 +7,16 @@ module.exports.acceptInvite = function(req, res, next) {
     if (!invite) return inviteDoesNotExist(res);
     if (!checkInviteAuth(req.user._id, res, invite.to)) return inviteAuthError(res);
 
+    var allAccepted = true;
+
     for (let key in invite.to) {
       if (req.user._id.equals(invite.to[key].user)) invite.to[key].accepted = true;
+      if (invite.to[key].user && !invite.to[key].accepted) {
+        allAccepted = false;
+      } 
     }
+
+    if (allAccepted) invite.accepted = true;
 
     invite.save(function(error) {
       if (error) return helper.mongooseValidationError(res)

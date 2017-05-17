@@ -21,6 +21,10 @@ const InviteSchema = new Schema({
   date: {
     type: Date,
     required: true
+  },
+  accepted: {
+    type: Boolean,
+    default: false
   }
 });
 
