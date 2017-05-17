@@ -271,7 +271,7 @@ describe('POST /invite', function() {
         .expect('Content-Type', /json/)
         .expect(function(res) {
           res.body.success.should.be.equal(true);
-          res.body.invite.to[0].should.be.equal(anotherUser._id);
+          res.body.invite.to[0].user.should.be.equal(anotherUser._id);
         })
         .expect(200, done);
     });

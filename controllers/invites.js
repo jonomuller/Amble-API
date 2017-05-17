@@ -5,9 +5,11 @@ module.exports.acceptInvite = function(req, res, next) {
   Invite.findById(req.params.inviteID, function(error, invite) {
     if (error) return helper.mongooseValidationError(error, res);
     if (!invite) return inviteDoesNotExist(res);
-
     if (!checkInviteAuth(req.user._id, res, invite.to)) return inviteAuthError(res);
-    invite.accepted = true;
+
+    for (let key in invite.to) {
+      if (req.user._id.equals(invite.to[key].user)) invite.to[key].accepted = true;
+    }
 
     invite.save(function(error) {
       if (error) return helper.mongooseValidationError(res)
@@ -35,10 +37,13 @@ module.exports.startWalk = function(req, res, next) {
     if (error) return helper.mongooseValidationError(error, res);
     if (!invite) return inviteDoesNotExist(res);
 
-    if (!checkInviteAuth(req.user._id, res, [invite.from])) return inviteAuthError(res);
+    if (!req.user._id.equals(invite.from)) return inviteAuthError(res);
     removeInvite(invite, res);
   });
 };
+
+
+// Helper functions
 
 function inviteDoesNotExist(res) {
   return res.status(404).json({
@@ -54,11 +59,11 @@ function inviteAuthError(res) {
                 })
 }
 
-function checkInviteAuth(userID, res, ids) {
+function checkInviteAuth(userID, res, users) {
   var valid = false;
 
-  for (let key in ids) {
-    if (userID.equals(ids[key])) valid = true;
+  for (let key in users) {
+    if (userID.equals(users[key].user)) valid = true;
   }
 
   return valid;

@@ -110,22 +110,22 @@ module.exports.invite = function(req, res, next) {
   var date, users;
   if (req.body.date) date = new Date(req.body.date);
   
-  var userID = req.user._id;
+  var usersDict = [];
 
   if (req.body.users) {
     users = JSON.parse(req.body.users);
 
     for (let key in users) {
-      var user = users[key]
+      var userID = users[key]
 
-      if (userID.equals(user)) {
+      if (req.user._id.equals(userID)) {
         return res.status(400).json({
           success: false,
           error: 'An invite cannot be sent to yourself.'
         })
       }
 
-      User.findById(user, function(error, user) {
+      User.findById(userID, function(error, user) {
         if (error) return helper.mongooseValidationError(error, res);
 
         if (!user) return res.status(404).json({
@@ -133,10 +133,15 @@ module.exports.invite = function(req, res, next) {
                             error: 'User does not exist.'
                           })
 
+        usersDict.push({
+          user: userID,
+          accepted: false
+        })
+
         if (key == users.length - 1) {
           var invite = new Invite({
-            from: userID,
-            to: users,
+            from: req.user._id,
+            to: usersDict,
             date: date
           });
 
@@ -171,10 +176,10 @@ module.exports.invite = function(req, res, next) {
 
 module.exports.getSentInvites = function(req, res, next) {
   Invite.find({from: req.user._id})
-        .populate('to')
+        .populate('user')
         .exec(function(error, invites) {
           if (error) return helper.mongooseValidationError(error, res);
-
+          
           res.status(200).json({
             success: true,
             invites: invites
@@ -183,7 +188,7 @@ module.exports.getSentInvites = function(req, res, next) {
 };
 
 module.exports.getReceivedInvites = function(req, res, next) {
-  Invite.find({to: req.user._id})
+  Invite.find({'to.user': req.user._id})
         .populate('from')
         .exec(function(error, invites) {
           if (error) return helper.mongooseValidationError(error, res);

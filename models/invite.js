@@ -8,17 +8,19 @@ const InviteSchema = new Schema({
     required: true
   },
   to: [{
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    },
+    accepted: {
+      type: Boolean,
+      required: true
+    }
   }],
   date: {
     type: Date,
     required: true
-  },
-  accepted: {
-    type: Boolean,
-    default: false
   }
 });
 
