@@ -39,3 +39,4 @@ https://ambleapp.herokuapp.com/api
 
 - **[<code>GET</code> /invites/:inviteID/accept](https://github.com/jonomuller/Amble-API/blob/master/documentation/invites/accept.md)**
 - **[<code>GET</code> /invites/:inviteID/decline](https://github.com/jonomuller/Amble-API/blob/master/documentation/invites/decline.md)**
+- **[<code>GET</code> /invites/:inviteID/start_walk](https://github.com/jonomuller/Amble-API/blob/master/documentation/invites/start_walk.md)**

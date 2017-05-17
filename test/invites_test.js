@@ -31,15 +31,7 @@ describe('GET /:inviteID/accept', function() {
             if (err2) return done(err2);
             anotherUser = res2.body.user;
             anotherUserJWT = res2.body.jwt;
-            request(app)
-              .post('/api/users/invite')
-              .set('Authorization', 'JWT ' + jwt)
-              .send({users: '["' + anotherUser._id + '"]', date: '01/01/70'})
-              .end(function(err3, res3) {
-                if (err3) return done(err3);
-                inviteID = res3.body.invite._id;
-                done();
-              });
+            sendInvite(done);
           });
       });
   });
@@ -51,6 +43,7 @@ describe('GET /:inviteID/accept', function() {
         .set('Authorization', 'JWT ' + anotherUserJWT)
         .expect('Content-Type', /json/)
         .expect(function(res) {
+          // console.log(res);
           res.body.success.should.be.equal(true);
           res.body.invite.accepted.should.be.equal(true);
         })
@@ -91,11 +84,59 @@ describe('GET /:inviteID/accept', function() {
 
 describe('GET /:inviteID/decline', function() {
 
+  describe('Invalid invite decline', function() {
+    it('should fail if invite is not sent to user', function(done) {
+      request(app)
+        .get(uriPrefix + '/' + inviteID + '/decline')
+        .set('Authorization', 'JWT ' + jwt)
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(false);
+          res.body.error.should.be.equal('You are not authorised to modify this invite.');
+        })
+        .expect(401, done);
+    });
+  });
+
   describe('Valid invite decline', function() {
     it('should decline valid invite', function(done) {
       request(app)
         .get(uriPrefix + '/' + inviteID + '/decline')
         .set('Authorization', 'JWT ' + anotherUserJWT)
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(true);
+        })
+        .expect(200, done);
+    });
+  });
+});
+
+describe('GET /:inviteID/start_walk', function() {
+
+  before(function(done) {
+    sendInvite(done);
+  });
+
+  describe('Invalid start walk', function() {
+    it('should fail if invite is not sent to user', function(done) {
+      request(app)
+        .get(uriPrefix + '/' + inviteID + '/start_walk')
+        .set('Authorization', 'JWT ' + anotherUserJWT)
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+          res.body.success.should.be.equal(false);
+          res.body.error.should.be.equal('You are not authorised to modify this invite.');
+        })
+        .expect(401, done);
+    });
+  });
+
+  describe('Valid start walk', function() {
+    it('should start walk for valid invite', function(done) {
+      request(app)
+        .get(uriPrefix + '/' + inviteID + '/start_walk')
+        .set('Authorization', 'JWT ' + jwt)
         .expect('Content-Type', /json/)
         .expect(function(res) {
           res.body.success.should.be.equal(true);
@@ -109,3 +150,15 @@ describe('GET /:inviteID/decline', function() {
     helper.clearDB('invites', done);
   });
 });
+
+function sendInvite(done) {
+  request(app)
+  .post('/api/users/invite')
+  .set('Authorization', 'JWT ' + jwt)
+  .send({users: '["' + anotherUser._id + '"]', date: '01/01/70'})
+  .end(function(err, res) {
+    if (err) return done(err);
+    inviteID = res.body.invite._id;
+    done();
+  });
+}
