@@ -180,7 +180,7 @@ module.exports.invite = function(req, res, next) {
 
 module.exports.getSentInvites = function(req, res, next) {
   Invite.find({from: req.user._id})
-        .populate('user')
+        .populate('to.user')
         .exec(function(error, invites) {
           if (error) return helper.mongooseValidationError(error, res);
           
