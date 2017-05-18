@@ -50,15 +50,7 @@ module.exports.create = function(req, res, next) {
 
       User.findById(member, function(error, user) {
         if (error) return helper.mongooseValidationError(error, res);
-
-        if (!user) return res.status(404).json({
-          success: false,
-          error: 'Member `' + member + '` does not exist.'
-        })
-
-        if (key == members.length - 1) {
-          
-        }
+        if (!user) return memberDoesNotExist(member, res);
       });
     }
   }
@@ -109,19 +101,23 @@ module.exports.create = function(req, res, next) {
   walk.save(function(error) {
     if (error) return helper.mongooseValidationError(error, res);
     
-    User.findByIdAndUpdate(walk.owner, {$inc: {score: score, distance: distance, steps: steps}}, function(error, user) {
-      if (error) return helper.mongooseValidationError(error, res);
+    var allMembers = [walk.owner];
+    if (members) allMembers.push(members);
 
-      if (!user) return res.status(404).json({
-        success: false,
-        error: 'The owner specified for the walk is not a valid user.'
-      })
+    for (let key in allMembers) {
+      User.findByIdAndUpdate(allMembers[key], {$inc: {score: score, distance: distance, steps: steps}}, function(error, user) {
+        if (error) return helper.mongooseValidationError(error, res);
 
-      res.status(201).json({
-        success: true,
-        walk: walk
+        if (!user) return memberDoesNotExist(all)
+
+        if (key == allMembers.length - 1) {
+          res.status(201).json({
+            success: true,
+            walk: walk
+          });
+        }
       });
-    });
+    }
   });
 };
 
@@ -194,4 +190,14 @@ module.exports.deleteWalk = function(req, res, next) {
       })
     });
   });
+}
+
+
+// Helper functions
+
+function memberDoesNotExist(member, res) {
+  return res.status(404).json({
+           success: false,
+           error: 'Member `' + member + '` does not exist.'
+         })
 }
