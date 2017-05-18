@@ -149,7 +149,7 @@ module.exports.invite = function(req, res, next) {
             if (error) return helper.mongooseValidationError(error, res);
 
             if (user.deviceToken) {
-              Invite.count({'to.user': userID}, function(error, inviteCount) {
+              Invite.count({to: {$elemMatch: {user: userID, accepted: false}}}, function(error, inviteCount) {
                 if (error) return helper.mongooseValidationError(error, res);
 
                 var notification = new apn.Notification();
