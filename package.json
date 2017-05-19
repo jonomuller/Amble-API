@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "apn": "^2.1.4",
+    "async": "^2.4.0",
     "aws-sdk": "^2.48.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.17.1",

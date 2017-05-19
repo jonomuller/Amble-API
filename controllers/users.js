@@ -3,6 +3,7 @@ const Walk = require('../models/walk'),
       Invite = require('../models/invite'),
       helper = require('./helper'),
       config = require('../config/config'),
+      async = require('async'),
       apn = require('apn');
 
 var apnProvider = new apn.Provider({  
@@ -111,70 +112,47 @@ module.exports.invite = function(req, res, next) {
   if (req.body.date) date = new Date(req.body.date);
   
   var usersDict = [];
+  var usersFound = [];
 
   if (req.body.users) {
     users = JSON.parse(req.body.users);
 
-    for (let key in users) {
-      var userID = users[key]
-
-      if (req.user._id.equals(userID)) {
-        return res.status(400).json({
-          success: false,
-          error: 'An invite cannot be sent to yourself.'
-        })
-      }
+    async.forEach(users, function(userID, callback) {
+      if (req.user._id.equals(userID)) 
+        callback({status: 400, error: 'An invite cannot be sent to yourself.'});
 
       User.findById(userID, function(error, user) {
-        if (error) return helper.mongooseValidationError(error, res);
-
-        if (!user) return res.status(404).json({
-                            success: false,
-                            error: 'User does not exist.'
-                          })
+        if (error) return callback({type: 'mongoose', error: error});
+        if (!user) return callback({status: 404, error: 'User does not exist.'});
 
         usersDict.push({
           user: userID,
           accepted: false
         })
 
-        if (key == users.length - 1) {
-          var invite = new Invite({
-            from: req.user._id,
-            to: usersDict,
-            date: date
-          });
-
-          invite.save(function(error) {
-            if (error) return helper.mongooseValidationError(error, res);
-
-            if (user.deviceToken) {
-              Invite.count({to: {$elemMatch: {user: userID, accepted: false}}}, function(error, inviteCount) {
-                if (error) return helper.mongooseValidationError(error, res);
-
-                var notification = new apn.Notification();
-                notification.expiry = Math.floor(Date.now() / 1000) + 3600;
-                notification.badge = inviteCount;
-                notification.sound = 'ping.aiff';
-                notification.alert = req.user.name.firstName + ' ' + req.user.name.lastName + ' invited you to go on a walk.';
-                notification.topic = 'uk.ac.imperial.Amble';
-
-                apnProvider.send(notification, user.deviceToken).then(function(result) {  
-                    console.log(result);
-                });
-              });
-            } else {
-              console.log('No device token');
-            }
-
-            res.status(200).json({
-              success: true,
-              invite: invite
-            })
-          });
-        }
+        usersFound.push(user);
+        callback();
       });
-    }
+    }, function(err) {
+      if (err) {
+        if (err.type == 'mongoose') return helper.mongooseValidationError(err.error, res);
+        return res.status(err.status).json({
+          success: false,
+          error: err.error
+        })
+      } else {
+        var invite = new Invite({
+          from: req.user._id,
+          to: usersDict,
+          date: date
+        });
+
+        invite.save(function(error) {
+          if (error) return helper.mongooseValidationError(error, res);
+          sendNotifications(req, res, invite, usersFound);
+        });
+      }
+    });
   }
 };
 
@@ -203,3 +181,41 @@ module.exports.getReceivedInvites = function(req, res, next) {
           })
         });
 };
+
+
+
+// Helper methods
+
+function sendNotifications(req, res, invite, usersFound) {
+  async.forEach(usersFound, function(user, callback) {
+    if (user.deviceToken) {
+      Invite.count({to: {$elemMatch: {user: user._id, accepted: false}}}, function(error, inviteCount) {
+        if (error) return callback({type: 'mongoose', error: error});
+
+        var notification = new apn.Notification();
+        notification.expiry = Math.floor(Date.now() / 1000) + 3600;
+        notification.badge = inviteCount;
+        notification.sound = 'ping.aiff';
+        notification.alert = req.user.name.firstName + ' ' + req.user.name.lastName + ' invited you to go on a walk.';
+        notification.topic = 'uk.ac.imperial.Amble';
+
+        apnProvider.send(notification, user.deviceToken).then(function(result) {  
+            console.log(result);
+        });
+      });
+    } else {
+      console.log('No device token');
+    }
+
+    callback();
+  }, function(err) {
+    if (err) {
+      if (err.type == 'mongoose') return helper.mongooseValidationError(err.error, res);
+    } else {
+      res.status(200).json({
+        success: true,
+        invite: invite
+      })
+    }
+  });
+}
