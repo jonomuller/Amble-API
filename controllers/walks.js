@@ -3,6 +3,7 @@ const Walk = require('../models/walk'),
       Achievement = require('../models/point'),
       helper = require('./helper'),
       config = require('../config/config'),
+      async = require('async'),
       aws = require('aws-sdk'),
       s3 = new aws.S3();
 
@@ -20,16 +21,6 @@ const AchievementTypes = Object.freeze({
   DAY_STREAK: 2,
   GROUP: 3
 })
-
-function isValidAchievement(achievement) {
-  for (let key in AchievementTypes) {
-    if (achievement == key) {
-      return true
-    }
-  }
-
-  return false
-}
 
 module.exports.create = function(req, res, next) {
   var userID = req.user._id;
@@ -59,25 +50,9 @@ module.exports.create = function(req, res, next) {
   var score = 0;
 
   if (req.body.achievements) {
-    var achievements = JSON.parse(req.body.achievements);
-
-    for (let key in achievements) {
-      var a = achievements[key];
-
-      if (!isValidAchievement(a.name.toUpperCase())) 
-        return res.status(400).json({
-          success: false,
-          error: '`' + a.name + '` is an invalid achievement type.'
-        });
-
-      var achievement = new Achievement({
-        name: a.name,
-        value: a.value
-      })
-
-      score += a.value;
-      achievementSchemas.push(achievement);
-    }
+    achievements = parseAchievements(JSON.parse(req.body.achievements), res);
+    achievementSchemas = achievements.schemas;
+    score = achievements.score;
   }
 
   var distance = req.body.distance;
@@ -102,22 +77,24 @@ module.exports.create = function(req, res, next) {
     if (error) return helper.mongooseValidationError(error, res);
     
     var allMembers = [walk.owner];
-    if (members) allMembers.push(members);
+    if (members) allMembers = allMembers.concat(members);
 
-    for (let key in allMembers) {
-      User.findByIdAndUpdate(allMembers[key], {$inc: {score: score, distance: distance, steps: steps}}, function(error, user) {
-        if (error) return helper.mongooseValidationError(error, res);
-
-        if (!user) return memberDoesNotExist(all)
-
-        if (key == allMembers.length - 1) {
-          res.status(201).json({
-            success: true,
-            walk: walk
-          });
-        }
+    async.forEach(allMembers, function(member, callback) {
+      User.findByIdAndUpdate(member, {$inc: {score: score, distance: distance, steps: steps}}, function(error, user) {
+        if (error) return callback({type: 'mongoose', error: error})
+        if (!user) return memberDoesNotExist(member, res);
+        callback();
       });
-    }
+    }, function(err) {
+      if (err) {
+        if (err.type == 'mongoose') return helper.mongooseValidationError(error, res);
+      } else {
+        res.status(201).json({
+          success: true,
+          walk: walk
+        });
+      }
+    });
   });
 };
 
@@ -200,4 +177,42 @@ function memberDoesNotExist(member, res) {
            success: false,
            error: 'Member `' + member + '` does not exist.'
          })
+}
+
+function parseAchievements(achievements, res) {
+  var schemas = [];
+  var score = 0;
+
+  for (let key in achievements) {
+    var a = achievements[key];
+
+    if (!isValidAchievement(a.name.toUpperCase())) 
+      return res.status(400).json({
+        success: false,
+        error: '`' + a.name + '` is an invalid achievement type.'
+      });
+
+    var achievement = new Achievement({
+      name: a.name,
+      value: a.value
+    })
+
+    score += a.value;
+    schemas.push(achievement);
+  }
+
+  return {
+    schemas: schemas,
+    score: score
+  };
+}
+
+function isValidAchievement(achievement) {
+  for (let key in AchievementTypes) {
+    if (achievement == key) {
+      return true
+    }
+  }
+  
+  return false
 }
