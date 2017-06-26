@@ -1,7 +1,7 @@
 const mongoose = require('mongoose'),
       geoJSON = require('mongoose-geojson-schema'),
       Schema = mongoose.Schema,
-      Achievement = require('./point'),
+      Achievement = require('./achievement'),
       AchievementSchema = mongoose.model('Achievement').schema;
 
 const WalkSchema = new Schema({
@@ -22,7 +22,7 @@ const WalkSchema = new Schema({
     type: Schema.Types.MultiPoint,
     required: true
   },
-  image: {
+  imageURL: {
     type: String,
     required: true
   },
