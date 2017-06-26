@@ -139,7 +139,7 @@ module.exports.getWalk = function(req, res, next) {
 };
 
 module.exports.deleteWalk = function(req, res, next) {
-  Walk.findByIdAndRemove(req.params.walkID, function(error, walk) {
+  Walk.findById(req.params.walkID, function(error, walk) {
     if (error) return helper.mongooseValidationError(error, res)
 
     if (!walk) return res.status(404).json({
@@ -147,24 +147,42 @@ module.exports.deleteWalk = function(req, res, next) {
       error: 'No walk with that ID can be found.'
     })
 
-    var components = walk.image.split('/');
-    var imageKey = components[components.length - 1];
-    console.log(imageKey);
+    var allMembers = [walk.owner];
+    if (walk.members) allMembers = allMembers.concat(walk.members);
 
-    var params = {
-      Bucket: config.awsBucket,
-      Key: imageKey
+    var validUser = false;
+
+    for (let key in allMembers) {
+      if (req.user._id.equals(allMembers[key])) validUser = true;
     }
 
-    s3.deleteObject(params, function(error, data) {
-      if (error || !data) return res.status(500).json({
-        success: false,
-        error: 'Image could not be deleted.'
-      })
-      
-      res.status(200).json({
-        success: true
-      })
+    if (!validUser) return res.status(401).json({
+                      success: false,
+                      error: 'You are not authorised to modify this walk.'
+                    })
+
+    walk.remove(function(error) {
+      if (error) return helper.mongooseValidationError(error, res);
+
+      var components = walk.imageURL.split('/');
+      var imageKey = components[components.length - 1];
+      console.log(imageKey);
+
+      var params = {
+        Bucket: config.awsBucket,
+        Key: imageKey
+      }
+
+      s3.deleteObject(params, function(error, data) {
+        if (error || !data) return res.status(500).json({
+          success: false,
+          error: 'Image could not be deleted.'
+        })
+        
+        res.status(200).json({
+          success: true
+        })
+      });
     });
   });
 }
