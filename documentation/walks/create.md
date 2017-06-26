@@ -21,7 +21,7 @@ Stores a given list of coordinates in the database, with a reference to the user
 - **members**: [ObjectID]
 - **coordinates**: String _(required)_
 - **achievements**: String
-- **image**: String
+- **imageURL**: String
 - **time**: Number _(required)_
 - **distance**: Number _(required)_
 - **steps**: Number _(required)_
