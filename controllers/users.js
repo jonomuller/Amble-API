@@ -43,7 +43,7 @@ module.exports.getWalks = function(req, res, next) {
       walkDetails.push({
         id: walk._id,
         name: walk.name,
-        image: walk.image,
+        imageURL: walk.imageURL,
         createdAt: walk.createdAt
       });
     });

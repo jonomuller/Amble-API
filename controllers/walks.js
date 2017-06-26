@@ -1,6 +1,6 @@
 const Walk = require('../models/walk'),
       User = require('../models/user'),
-      Achievement = require('../models/point'),
+      Achievement = require('../models/achievement'),
       helper = require('./helper'),
       config = require('../config/config'),
       async = require('async'),
@@ -67,7 +67,7 @@ module.exports.create = function(req, res, next) {
       coordinates: coordinates
     },
     achievements: achievementSchemas,
-    image: req.body.image,
+    imageURL: req.body.imageURL,
     time: req.body.time,
     distance: distance,
     steps: steps
